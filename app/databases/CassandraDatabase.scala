@@ -12,4 +12,8 @@ class CassandraDatabase(val keyspace: CassandraConnection) extends Database[Cass
   object users extends Users with Connector
 }
 
-object CassandraDatabase extends CassandraDatabase(CassandraConnector.connector)
+object Databases {
+  private object CassandraDatabase extends CassandraDatabase(CassandraConnector.connector)
+
+  val userTable = CassandraDatabase.users
+}
