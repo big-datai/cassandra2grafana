@@ -15,7 +15,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
  */
 class CassandraController extends Controller {
   //todo: Specify methods
-  def index = Action {
+  def testConnection = Action {
     Ok("Hello")
   }
 

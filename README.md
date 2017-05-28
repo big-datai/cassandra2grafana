@@ -1,1 +1,1 @@
-**Cassandra REST API**
+**Cassandra REST API for Grafana dashboard** 
