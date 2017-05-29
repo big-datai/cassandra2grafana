@@ -4,5 +4,8 @@
 # ~~~~
 
 # An example controller showing a sample home page
-GET     /                           controllers.CassandraController.testConnection
-GET     /:fname/:lname              controllers.CassandraController.save(fname: String, lname: String)
+GET     /                           controllers.ApplicationController.testConnection
+#GET     /test                       controllers.ApplicationController.testSave
+POST    /                           controllers.ApplicationController.save
+GET     /:id                        controllers.ApplicationController.find(id: String)
+DELETE  /:id                        controllers.ApplicationController.remove(id: String)
