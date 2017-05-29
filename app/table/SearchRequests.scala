@@ -6,7 +6,7 @@ import com.outworkers.phantom.ResultSet
 import com.outworkers.phantom.connectors.RootConnector
 import com.outworkers.phantom.dsl._
 import model.SearchRequest._
-import model.{LoginDetails, RoomRequest, SearchDetails, SearchRequest}
+import model._
 import play.api.libs.json.Json
 
 import scala.concurrent.Future
@@ -64,6 +64,15 @@ abstract class SearchRequests extends Table[SearchRequests, SearchRequest] with 
       .value(_.roomRequests, sr.roomRequests)
       .consistencyLevel_=(ConsistencyLevel.ALL)
       .future()
+  }
+
+  def modify(id: UUID, sr: SearchRequestUpdate): Future[ResultSet] = {
+    update
+      .where(_.id eqs id)
+      .modify(_.loginDetails setTo sr.loginDetails)
+      .and(_.searchDetails setTo sr.searchDetails)
+      .and(_.roomRequests setTo sr.roomRequests)
+      .future
   }
 
   def remove(id: UUID): Future[ResultSet] = {

@@ -4,7 +4,7 @@ import java.util.UUID
 
 import com.outworkers.phantom.dsl.UUID
 import databases.Databases._
-import forms.ValidationForms.searchRequestForm
+import forms.ValidationForms._
 import play.api.libs.json.Json
 import play.api.mvc._
 import model.SearchRequest._
@@ -24,7 +24,7 @@ class ApplicationController extends Controller with CustomLogger {
 
   def testConnection = Action { Ok }
 
-  def save = Action.async(parse.form(searchRequestForm)) { implicit requests =>
+  def save = Action.async(parse.form(insertForm)) { implicit requests =>
     requestsTable.save(requests.body).map(_ => Created)
   }
 
@@ -35,16 +35,11 @@ class ApplicationController extends Controller with CustomLogger {
     }
   }
 
-  def remove(id: String) = Action.async {
-    requestsTable.remove(id) map(_ => NoContent)
+  def update(id: String) = Action.async(parse.form(updateForm)) { implicit requests =>
+    requestsTable.modify(id, requests.body) map(_ => Ok)
   }
 
-//  def testSave = Action.async {
-//    log.info("testSaving")
-//    requestsTable.save(SearchRequest(
-//      loginDetails = LoginDetails("fsanaulla  ", "1234", 4),
-//      searchDetails = SearchDetails(DateTime.now, 0, 0, 0, 0),
-//      roomRequests = List(RoomRequest(2, 0, 0)))
-//    ) map { res => Ok(s"${res.wasApplied()}")}
-//  }
+  def remove(id: String) = Action.async {
+    requestsTable.remove(id) map(_ => Ok)
+  }
 }

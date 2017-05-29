@@ -1,6 +1,6 @@
 package forms
 
-import model.{LoginDetails, RoomRequest, SearchDetails, SearchRequest}
+import model._
 import play.api.data.Form
 import play.api.data.Forms._
 
@@ -9,7 +9,7 @@ import play.api.data.Forms._
   */
 object ValidationForms {
 
-  final val searchRequestForm = Form(
+  final val insertForm = Form(
     mapping(
       "id" -> uuid,
       "loginDetails" -> mapping(
@@ -30,5 +30,27 @@ object ValidationForms {
         "childrenAges" -> number
       )(RoomRequest.apply)(RoomRequest.unapply))
     )(SearchRequest.apply)(SearchRequest.unapply)
+  )
+
+  final val updateForm = Form(
+    mapping(
+      "loginDetails" -> mapping(
+        "login" -> nonEmptyText,
+        "password" -> nonEmptyText,
+        "currencyId" -> number
+      )(LoginDetails.apply)(LoginDetails.unapply),
+      "searchDetails" -> mapping(
+        "arrival" -> jodaDate,
+        "duration" -> number,
+        "regionId" -> number,
+        "mealBasisId" -> number,
+        "minStarRating" -> number
+      )(SearchDetails.apply)(SearchDetails.unapply),
+      "roomsRequests" -> list(mapping(
+        "adults" -> number,
+        "children" -> number,
+        "childrenAges" -> number
+      )(RoomRequest.apply)(RoomRequest.unapply))
+    )(SearchRequestUpdate.apply)(SearchRequestUpdate.unapply)
   )
 }

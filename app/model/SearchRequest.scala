@@ -27,6 +27,10 @@ case class SearchRequest(id: UUID = UUID.randomUUID(),
                          searchDetails: SearchDetails,
                          roomRequests: List[RoomRequest])
 
+case class SearchRequestUpdate(loginDetails: LoginDetails,
+                               searchDetails: SearchDetails,
+                               roomRequests: List[RoomRequest])
+
 object SearchRequest {
   implicit val loginFmt = Json.format[LoginDetails]
   implicit val searchFmt = Json.format[SearchDetails]
