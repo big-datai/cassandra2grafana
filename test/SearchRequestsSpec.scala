@@ -1,7 +1,5 @@
-package table
-
+import databases.model._
 import helper.CassandraTableSpec
-import model._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.language.postfixOps

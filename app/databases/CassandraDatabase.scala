@@ -2,7 +2,7 @@ package databases
 
 import com.outworkers.phantom.database.Database
 import com.outworkers.phantom.dsl.KeySpaceDef
-import table.SearchRequests
+import databases.table.SearchRequests
 import utils.Connection
 
 /**
@@ -12,7 +12,7 @@ class CassandraDatabase(val keySpace: KeySpaceDef) extends Database[CassandraDat
   object requests extends SearchRequests with Connector
 }
 
-class Tables {
+object Tables {
   object CassandraDatabase extends CassandraDatabase(Connection.connector)
 
   /**

@@ -1,12 +1,12 @@
-package table
+package databases.table
 
 import java.util.UUID
 
 import com.outworkers.phantom.ResultSet
 import com.outworkers.phantom.connectors.RootConnector
 import com.outworkers.phantom.dsl._
-import model.SearchRequest._
-import model._
+import databases.model.SearchRequest._
+import databases.model._
 import play.api.libs.json.Json
 
 import scala.concurrent.Future

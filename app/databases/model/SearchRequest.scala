@@ -1,4 +1,4 @@
-package model
+package databases.model
 
 import java.util.UUID
 

@@ -1,7 +1,7 @@
 package helper
 
 import com.datastax.driver.core.utils.UUIDs
-import model.{LoginDetails, RoomRequest, SearchDetails, SearchRequest}
+import databases.model.{LoginDetails, RoomRequest, SearchDetails, SearchRequest}
 import org.joda.time.DateTime
 
 /**
