@@ -1,17 +1,21 @@
 name := """Priam"""
 version := "1.0-SNAPSHOT"
+scalaVersion := "2.11.8"
 
 lazy val root = (project in file("."))
   .enablePlugins(PlayScala)
   .enablePlugins(JavaAppPackaging)
 
-
-scalaVersion := "2.11.8"
+lazy val Versions = new {
+  val phantom = "2.9.1"
+  val util = "0.30.1"
+}
 
 libraryDependencies ++= Seq(
-  "org.scalatest" % "scalatest_2.11" % "3.0.3" % Test,
-  "com.outworkers" % "phantom-dsl_2.11" % "2.9.1",
-  "com.typesafe" % "config" % "1.3.1",
-  "ch.qos.logback" % "logback-classic" % "1.1.7",
-  "com.typesafe.scala-logging" % "scala-logging_2.11" % "3.5.0"
+  "org.scalatestplus" % "play_2.11" % "1.4.0" % Test,
+  "com.outworkers" % "util-testing_2.11" % Versions.util % Test,
+  "com.outworkers" % "phantom-dsl_2.11" % Versions.phantom,
+  "com.typesafe" % "config" % "1.3.1"
 )
+
+PhantomSbtPlugin.projectSettings

@@ -72,6 +72,7 @@ abstract class SearchRequests extends Table[SearchRequests, SearchRequest] with 
       .modify(_.loginDetails setTo sr.loginDetails)
       .and(_.searchDetails setTo sr.searchDetails)
       .and(_.roomRequests setTo sr.roomRequests)
+      .consistencyLevel_=(ConsistencyLevel.ALL)
       .future
   }
 

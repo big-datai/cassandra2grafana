@@ -5,7 +5,7 @@
 
 # An example controller showing a sample home page
 GET     /                           controllers.ApplicationController.testConnection
-POST    /                           controllers.ApplicationController.save
-PUT     /:id                        controllers.ApplicationController.update(id: String)
-GET     /:id                        controllers.ApplicationController.find(id: String)
-DELETE  /:id                        controllers.ApplicationController.remove(id: String)
+POST    /request                           controllers.ApplicationController.save
+PUT     /request/:id                        controllers.ApplicationController.update(id: String)
+GET     /request/:id                        controllers.ApplicationController.find(id: String)
+DELETE  /request/:id                        controllers.ApplicationController.remove(id: String)
