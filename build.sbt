@@ -12,6 +12,7 @@ lazy val Versions = new {
 }
 
 libraryDependencies ++= Seq(
+  filters,
   "org.scalatestplus" % "play_2.11" % "1.4.0" % Test,
   "com.outworkers" % "util-testing_2.11" % Versions.util % Test,
   "com.outworkers" % "phantom-dsl_2.11" % Versions.phantom,
