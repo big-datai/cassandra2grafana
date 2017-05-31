@@ -13,7 +13,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
  * This controller creates an `Action` to handle HTTP requests to the
  * application's home page.
  */
-class ApplicationController extends Controller {
+class SearchRequestController extends Controller {
 
   def testConnection = Action { Ok }
 
@@ -38,5 +38,10 @@ class ApplicationController extends Controller {
   def remove(id: String) = Action.async {
     logger.info(s"Remove request by id: $id")
     requestTable.remove(id) map(_ => Ok)
+  }
+
+  def findAll = Action.async {
+    logger.info(s"Getting all requests")
+    requestTable.findAll map (resLst => Ok(Json.toJson(resLst)))
   }
 }

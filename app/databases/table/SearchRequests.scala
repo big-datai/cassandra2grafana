@@ -82,4 +82,8 @@ abstract class SearchRequests extends Table[SearchRequests, SearchRequest] with 
       .consistencyLevel_=(ConsistencyLevel.ALL)
       .future()
   }
+
+  def findAll: Future[List[SearchRequest]] = {
+    select.fetch()
+  }
 }
