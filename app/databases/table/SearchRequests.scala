@@ -17,26 +17,14 @@ import scala.concurrent.Future
 abstract class SearchRequests extends Table[SearchRequests, SearchRequest] with RootConnector {
 
   object id extends UUIDColumn with PartitionKey
-
-  object loginDetails extends JsonColumn[LoginDetails] {
-    override def fromJson(obj: String): LoginDetails = {
-      Json.parse(obj).as[LoginDetails]
-    }
-
-    override def toJson(obj: LoginDetails): String = {
-      Json.stringify(Json.toJson(obj))
-    }
-  }
-
-  object searchDetails extends JsonColumn[SearchDetails] {
-    override def fromJson(obj: String): SearchDetails = {
-      Json.parse(obj).as[SearchDetails]
-    }
-
-    override def toJson(obj: SearchDetails): String = {
-      Json.stringify(Json.toJson(obj))
-    }
-  }
+  object login extends StringColumn
+  object password extends StringColumn
+  object currencyId extends IntColumn
+  object arrival extends DateTimeColumn
+  object duration extends IntColumn
+  object regionId extends IntColumn
+  object mealBasisId extends IntColumn
+  object minStarRating extends IntColumn
 
   object roomRequests extends JsonListColumn[RoomRequest] {
     override def fromJson(obj: String): RoomRequest = {
@@ -48,7 +36,17 @@ abstract class SearchRequests extends Table[SearchRequests, SearchRequest] with 
     }
   }
 
-  override def fromRow(r: Row): SearchRequest = SearchRequest(id(r), loginDetails(r), searchDetails(r), roomRequests(r))
+  override def fromRow(r: Row): SearchRequest =
+    SearchRequest(id(r),
+      login(r),
+      password(r),
+      currencyId(r),
+      arrival(r),
+      duration(r),
+      regionId(r),
+      mealBasisId(r),
+      minStarRating(r),
+      roomRequests(r))
 
   def find(id: UUID): Future[Option[SearchRequest]] = {
     select
@@ -56,11 +54,25 @@ abstract class SearchRequests extends Table[SearchRequests, SearchRequest] with 
       .one()
   }
 
+  def findByDateTime(from: DateTime, to: DateTime, count: Int): Future[List[SearchRequest]] = {
+    select
+      .where(_.arrival isGte from)
+      .and(_.arrival isLte to)
+      .limit(count)
+      .fetch()
+  }
+
   def save(sr: SearchRequest): Future[ResultSet] = {
     insert
       .value(_.id, sr.id)
-      .value(_.loginDetails, sr.loginDetails)
-      .value(_.searchDetails, sr.searchDetails)
+      .value(_.login, sr.login)
+      .value(_.password, sr.password)
+      .value(_.currencyId, sr.currencyId)
+      .value(_.arrival, sr.arrival)
+      .value(_.duration, sr.duration)
+      .value(_.regionId, sr.regionId)
+      .value(_.mealBasisId, sr.mealBasisId)
+      .value(_.minStarRating, sr.minStarRating)
       .value(_.roomRequests, sr.roomRequests)
       .consistencyLevel_=(ConsistencyLevel.ALL)
       .future()
@@ -69,8 +81,14 @@ abstract class SearchRequests extends Table[SearchRequests, SearchRequest] with 
   def modify(id: UUID, sr: SearchRequestUpdate): Future[ResultSet] = {
     update
       .where(_.id eqs id)
-      .modify(_.loginDetails setTo sr.loginDetails)
-      .and(_.searchDetails setTo sr.searchDetails)
+      .modify(_.login setTo sr.login)
+      .and(_.password setTo sr.password)
+      .and(_.currencyId setTo sr.currencyId)
+      .and(_.arrival setTo sr.arrival)
+      .and(_.duration setTo sr.duration)
+      .and(_.regionId setTo sr.regionId)
+      .and(_.mealBasisId setTo sr.mealBasisId)
+      .and(_.minStarRating setTo sr.minStarRating)
       .and(_.roomRequests setTo sr.roomRequests)
       .consistencyLevel_=(ConsistencyLevel.ALL)
       .future
