@@ -12,18 +12,14 @@ object ValidationForms {
   final val insertForm = Form(
     mapping(
       "id" -> uuid,
-      "loginDetails" -> mapping(
-        "login" -> nonEmptyText,
-        "password" -> nonEmptyText,
-        "currencyId" -> number
-      )(LoginDetails.apply)(LoginDetails.unapply),
-      "searchDetails" -> mapping(
-        "arrival" -> jodaDate,
-        "duration" -> number,
-        "regionId" -> number,
-        "mealBasisId" -> number,
-        "minStarRating" -> number
-      )(SearchDetails.apply)(SearchDetails.unapply),
+      "login" -> nonEmptyText,
+      "password" -> nonEmptyText,
+      "currencyId" -> number,
+      "arrival" -> jodaDate,
+      "duration" -> number,
+      "regionId" -> number,
+      "mealBasisId" -> number,
+      "minStarRating" -> number,
       "roomsRequests" -> list(mapping(
         "adults" -> number,
         "children" -> number,
@@ -34,22 +30,18 @@ object ValidationForms {
 
   final val updateForm = Form(
     mapping(
-      "loginDetails" -> mapping(
         "login" -> nonEmptyText,
         "password" -> nonEmptyText,
-        "currencyId" -> number
-      )(LoginDetails.apply)(LoginDetails.unapply),
-      "searchDetails" -> mapping(
+        "currencyId" -> number,
         "arrival" -> jodaDate,
         "duration" -> number,
         "regionId" -> number,
         "mealBasisId" -> number,
-        "minStarRating" -> number
-      )(SearchDetails.apply)(SearchDetails.unapply),
-      "roomsRequests" -> list(mapping(
-        "adults" -> number,
-        "children" -> number,
-        "childrenAges" -> number
+        "minStarRating" -> number,
+        "roomsRequests" -> list(mapping(
+          "adults" -> number,
+          "children" -> number,
+          "childrenAges" -> number
       )(RoomRequest.apply)(RoomRequest.unapply))
     )(SearchRequestUpdate.apply)(SearchRequestUpdate.unapply)
   )
