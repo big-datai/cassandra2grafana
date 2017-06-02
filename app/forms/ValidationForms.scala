@@ -9,7 +9,7 @@ import play.api.data.Forms._
   */
 object ValidationForms {
 
-  final val insertForm = Form(
+  final val searchRequestInsertForm = Form(
     mapping(
       "id" -> uuid,
       "login" -> nonEmptyText,
@@ -20,29 +20,25 @@ object ValidationForms {
       "regionId" -> number,
       "mealBasisId" -> number,
       "minStarRating" -> number,
-      "roomsRequests" -> list(mapping(
-        "adults" -> number,
-        "children" -> number,
-        "childrenAges" -> number
-      )(RoomRequest.apply)(RoomRequest.unapply))
+      "adults" -> number,
+      "children" -> number,
+      "childrenAges" -> number
     )(SearchRequest.apply)(SearchRequest.unapply)
   )
 
-  final val updateForm = Form(
+  final val searchRequestUpdateForm = Form(
     mapping(
-        "login" -> nonEmptyText,
-        "password" -> nonEmptyText,
-        "currencyId" -> number,
-        "arrival" -> jodaDate,
-        "duration" -> number,
-        "regionId" -> number,
-        "mealBasisId" -> number,
-        "minStarRating" -> number,
-        "roomsRequests" -> list(mapping(
-          "adults" -> number,
-          "children" -> number,
-          "childrenAges" -> number
-      )(RoomRequest.apply)(RoomRequest.unapply))
+      "login" -> nonEmptyText,
+      "password" -> nonEmptyText,
+      "currencyId" -> number,
+      "arrival" -> jodaDate,
+      "duration" -> number,
+      "regionId" -> number,
+      "mealBasisId" -> number,
+      "minStarRating" -> number,
+      "adults" -> number,
+      "children" -> number,
+      "childrenAges" -> number
     )(SearchRequestUpdate.apply)(SearchRequestUpdate.unapply)
   )
 }

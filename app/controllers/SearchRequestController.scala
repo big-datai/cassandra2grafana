@@ -1,6 +1,6 @@
 package controllers
 
-import databases.Tables.requestTable
+import databases.Tables._
 import forms.ValidationForms._
 import play.api.Logger.logger
 import play.api.libs.json.Json
@@ -17,31 +17,26 @@ class SearchRequestController extends Controller {
 
   def testConnection = Action { Ok }
 
-  def save = Action.async(parse.form(insertForm)) { implicit requests =>
+  def save = Action.async(parse.form(searchRequestInsertForm)) { implicit requests =>
     logger.info("Saving to table...")
-    requestTable.save(requests.body).map(_ => Created)
+    searchRequestsTable.save(requests.body).map(_ => Created)
   }
 
   def find(id: String) = Action.async {
     logger.info(s"Getting request by id: $id")
-    requestTable.find(id) map {
+    searchRequestsTable.find(id) map {
       case Some(sr) => Ok(Json.toJson(sr))
       case None => NoContent
     }
   }
 
-  def update(id: String) = Action.async(parse.form(updateForm)) { implicit requests =>
+  def update(id: String) = Action.async(parse.form(searchRequestUpdateForm)) { implicit requests =>
     logger.info(s"Updating request by id: $id")
-    requestTable.modify(id, requests.body) map(_ => Ok)
+    searchRequestsTable.modify(id, requests.body) map(_ => Ok)
   }
 
   def remove(id: String) = Action.async {
     logger.info(s"Remove request by id: $id")
-    requestTable.remove(id) map(_ => Ok)
-  }
-
-  def findAll = Action.async {
-    logger.info(s"Getting all requests")
-    requestTable.findAll map (resLst => Ok(Json.toJson(resLst)))
+    searchRequestsTable.remove(id) map(_ => Ok)
   }
 }

@@ -8,20 +8,18 @@ import play.api.libs.json.Json
 /**
   * Created by fayaz on 29.05.17.
   */
-case class RoomRequest(adults: Int,
-                       children: Int,
-                       childrenAges: Int)
-
 case class SearchRequest(id: UUID = UUID.randomUUID(),
-                             login: String,
-                             password: String,
-                             currencyId: Int,
-                             arrival: DateTime,
-                             duration: Int,
-                             regionId: Int,
-                             mealBasisId: Int,
-                             minStarRating: Int,
-                             roomRequests: List[RoomRequest])
+                         login: String,
+                         password: String,
+                         currencyId: Int,
+                         arrival: DateTime,
+                         duration: Int,
+                         regionId: Int,
+                         mealBasisId: Int,
+                         minStarRating: Int,
+                         adults: Int,
+                         children: Int,
+                         childrenAges: Int)
 
 case class SearchRequestUpdate(login: String,
                                password: String,
@@ -31,9 +29,10 @@ case class SearchRequestUpdate(login: String,
                                regionId: Int,
                                mealBasisId: Int,
                                minStarRating: Int,
-                               roomRequests: List[RoomRequest])
+                               adults: Int,
+                               children: Int,
+                               childrenAges: Int)
 
 object SearchRequest {
-  implicit val roomFmt = Json.format[RoomRequest]
   implicit val searchRequestsFmt = Json.format[SearchRequest]
 }

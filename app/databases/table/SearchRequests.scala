@@ -2,13 +2,12 @@ package databases.table
 
 import java.util.UUID
 
-import com.outworkers.phantom.ResultSet
 import com.outworkers.phantom.connectors.RootConnector
-import com.outworkers.phantom.dsl._
-import databases.model.SearchRequest._
+import com.outworkers.phantom.dsl.{ConsistencyLevel, DateTime, PartitionKey, Table}
+import com.outworkers.phantom.{ResultSet, Row}
 import databases.model._
-import play.api.libs.json.Json
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 /**
@@ -25,19 +24,13 @@ abstract class SearchRequests extends Table[SearchRequests, SearchRequest] with 
   object regionId extends IntColumn
   object mealBasisId extends IntColumn
   object minStarRating extends IntColumn
+  object adults extends IntColumn
+  object children extends IntColumn
+  object childrenAges extends IntColumn
 
-  object roomRequests extends JsonListColumn[RoomRequest] {
-    override def fromJson(obj: String): RoomRequest = {
-      Json.parse(obj).as[RoomRequest]
-    }
-
-    override def toJson(obj: RoomRequest): String = {
-      Json.stringify(Json.toJson(obj))
-    }
-  }
-
-  override def fromRow(r: Row): SearchRequest =
-    SearchRequest(id(r),
+  override def fromRow(r: Row): SearchRequest = {
+    SearchRequest(
+      id(r),
       login(r),
       password(r),
       currencyId(r),
@@ -46,14 +39,18 @@ abstract class SearchRequests extends Table[SearchRequests, SearchRequest] with 
       regionId(r),
       mealBasisId(r),
       minStarRating(r),
-      roomRequests(r))
+      adults(r),
+      children(r),
+      childrenAges(r)
+    )
+  }
 
   def find(id: UUID): Future[Option[SearchRequest]] = {
     select
       .where(_.id eqs id)
       .one()
   }
-
+  //specify
   def findByDateTime(from: DateTime, to: DateTime, count: Int): Future[List[SearchRequest]] = {
     select
       .where(_.arrival isGte from)
@@ -73,7 +70,9 @@ abstract class SearchRequests extends Table[SearchRequests, SearchRequest] with 
       .value(_.regionId, sr.regionId)
       .value(_.mealBasisId, sr.mealBasisId)
       .value(_.minStarRating, sr.minStarRating)
-      .value(_.roomRequests, sr.roomRequests)
+      .value(_.adults, sr.adults)
+      .value(_.children, sr.children)
+      .value(_.childrenAges, sr.childrenAges)
       .consistencyLevel_=(ConsistencyLevel.ALL)
       .future()
   }
@@ -89,9 +88,11 @@ abstract class SearchRequests extends Table[SearchRequests, SearchRequest] with 
       .and(_.regionId setTo sr.regionId)
       .and(_.mealBasisId setTo sr.mealBasisId)
       .and(_.minStarRating setTo sr.minStarRating)
-      .and(_.roomRequests setTo sr.roomRequests)
+      .and(_.adults setTo sr.adults)
+      .and(_.children setTo sr.children)
+      .and(_.childrenAges setTo sr.childrenAges)
       .consistencyLevel_=(ConsistencyLevel.ALL)
-      .future
+      .future()
   }
 
   def remove(id: UUID): Future[ResultSet] = {
@@ -99,9 +100,5 @@ abstract class SearchRequests extends Table[SearchRequests, SearchRequest] with 
       .where(_.id eqs id)
       .consistencyLevel_=(ConsistencyLevel.ALL)
       .future()
-  }
-
-  def findAll: Future[List[SearchRequest]] = {
-    select.fetch()
   }
 }

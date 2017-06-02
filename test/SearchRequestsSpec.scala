@@ -10,24 +10,33 @@ import scala.language.postfixOps
 class SearchRequestsSpec extends CassandraTableSpec {
 
   override def beforeAll(): Unit = database.create()
-  val table = database.requests
+  val table = database.searchRequests
 
-  "SearchRequest dao" should "work correctly" in {
+  "SearchRequests table" should "insert/update/find/remove correctly" in {
     for {
-      insert <- table.save(sample)
+      insert <- table.save(sampleSearchRequest)
       update <- table.modify(
-        sample.id,
+        sampleSearchRequest.id,
         SearchRequestUpdate(
-          LoginDetails("login", "testPass", 3),
-          sample.searchDetails,
-          sample.roomRequests))
-      find <- table.find(sample.id)
-      remove <- table.remove(sample.id)
-      check <- table.find(sample.id)
+          sampleSearchRequest.login,
+          sampleSearchRequest.password,
+          sampleSearchRequest.currencyId,
+          sampleSearchRequest.arrival,
+          sampleSearchRequest.duration,
+          sampleSearchRequest.regionId,
+          sampleSearchRequest.mealBasisId,
+          sampleSearchRequest.minStarRating,
+          sampleSearchRequest.adults,
+          sampleSearchRequest.children,
+          sampleSearchRequest.childrenAges
+        ))
+      find <- table.find(sampleSearchRequest.id)
+      remove <- table.remove(sampleSearchRequest.id)
+      check <- table.find(sampleSearchRequest.id)
     } yield {
       checks(insert)
       checks(update)
-      find.map(_.loginDetails.login) shouldBe Some("login")
+      find.map(_.login) shouldBe Some("login")
       checks(remove)
       check shouldBe None
     }

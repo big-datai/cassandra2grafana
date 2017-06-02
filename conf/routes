@@ -8,5 +8,4 @@ GET     /                           controllers.SearchRequestController.testConn
 POST    /request                    controllers.SearchRequestController.save
 PUT     /request/:id                controllers.SearchRequestController.update(id: String)
 GET     /request/:id                controllers.SearchRequestController.find(id: String)
-GET     /request                    controllers.SearchRequestController.findAll
 DELETE  /request/:id                controllers.SearchRequestController.remove(id: String)

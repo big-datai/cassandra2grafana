@@ -9,14 +9,14 @@ import utils.Connection
   * Created by fayaz on 27.05.17.
   */
 class CassandraDatabase(val keySpace: KeySpaceDef) extends Database[CassandraDatabase](keySpace) {
-  object requests extends SearchRequests with Connector
+  object searchRequests extends SearchRequests with Connector
 }
 
 object Tables {
   object CassandraDatabase extends CassandraDatabase(Connection.connector)
 
   /**
-    * CREATE TABLE test.searchrequests (id uuid PRIMARY KEY , loginDetails text, searchDetails text, roomRequests list<text>);
+    * CREATE TABLE ${keyspace}.searchrequests (id uuid PRIMARY KEY , loginDetails text, searchDetails text, roomRequests list<text>);
     */
-  final val requestTable = CassandraDatabase.requests
+  final val searchRequestsTable = CassandraDatabase.searchRequests
 }
