@@ -4,8 +4,6 @@
 # ~~~~
 
 # An example controller showing a sample home page
-GET     /                           controllers.SearchRequestController.testConnection
-POST    /request                    controllers.SearchRequestController.save
-PUT     /request/:id                controllers.SearchRequestController.update(id: String)
-GET     /request/:id                controllers.SearchRequestController.find(id: String)
-DELETE  /request/:id                controllers.SearchRequestController.remove(id: String)
+GET     /                           controllers.ClientSearchController.testConnection
+GET     /request/:id                controllers.ClientSearchController.find(id: String)
+DELETE  /request/:id                controllers.ClientSearchController.remove(id: String)

@@ -16,7 +16,8 @@ libraryDependencies ++= Seq(
   "org.scalatestplus" % "play_2.11" % "1.4.0" % Test,
   "com.outworkers" % "util-testing_2.11" % Versions.util % Test,
   "com.outworkers" % "phantom-dsl_2.11" % Versions.phantom,
-  "com.typesafe" % "config" % "1.3.1"
+  "com.typesafe" % "config" % "1.3.1",
+  "org.cvogt" % "play-json-extensions_2.11" % "0.8.0"
 )
 
 PhantomSbtPlugin.projectSettings

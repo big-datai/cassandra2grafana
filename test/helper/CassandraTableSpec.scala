@@ -16,7 +16,8 @@ trait CassandraTableSpec
   with OptionValues
   with BeforeAndAfterAll
   with Samples
-  with EmbeddedCassandraLike {
+  with EmbeddedCassandraLike
+  with utils.Connection.testConnector.Connector {
 
   def checks(resultSet: ResultSet): Assertion = {
     resultSet isExhausted() shouldBe true
