@@ -8,9 +8,9 @@ resolvers ++= Seq(
   Resolver.sonatypeRepo("releases"),
   Resolver.typesafeRepo("releases"),
   Resolver.bintrayRepo("websudos", "oss-releases"),
-  Resolver.url("Maven ivy Websudos", url(Resolver.DefaultMavenRepositoryRoot))(websudosPattern)
+  Resolver.url("Maven ivy Websudos", url(Resolver.DefaultMavenRepositoryRoot))(websudosPattern),
+  Resolver.jcenterRepo
 )
 
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.5.14")
 addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.1.6")
 addSbtPlugin("com.websudos" %% "phantom-sbt" % "1.27.0")

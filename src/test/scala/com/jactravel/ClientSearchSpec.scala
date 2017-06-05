@@ -1,4 +1,6 @@
-import helper.CassandraTableSpec
+package com.jactravel
+
+import com.jactravel.helper.CassandraTableSpec
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.language.postfixOps

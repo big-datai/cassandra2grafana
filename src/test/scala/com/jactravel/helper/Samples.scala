@@ -1,4 +1,4 @@
-package helper
+package com.jactravel.helper
 
 import databases.model.ClientSearchEntity
 

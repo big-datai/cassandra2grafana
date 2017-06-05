@@ -1,7 +1,7 @@
-package helper
+package com.jactravel.helper
 
+import com.jactravel.helper.EmbeddedCassandra.EmbeddedCassandraLike
 import com.outworkers.phantom.dsl.ResultSet
-import helper.EmbeddedCassandra.EmbeddedCassandraLike
 import org.scalatest._
 import org.scalatest.concurrent.ScalaFutures
 
