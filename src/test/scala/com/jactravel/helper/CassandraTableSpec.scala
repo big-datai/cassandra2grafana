@@ -17,7 +17,7 @@ trait CassandraTableSpec
   with BeforeAndAfterAll
   with Samples
   with EmbeddedCassandraLike
-  with utils.Connection.testConnector.Connector {
+  with com.jactravel.utils.Connection.testConnector.Connector {
 
   def checks(resultSet: ResultSet): Assertion = {
     resultSet isExhausted() shouldBe true

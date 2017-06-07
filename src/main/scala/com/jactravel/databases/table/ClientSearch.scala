@@ -76,14 +76,14 @@ abstract class ClientSearch extends Table[ClientSearch, ClientSearchEntity] with
     )
   }
 
-  def find(queryUUID: String): Future[Option[ClientSearchEntity]] = {
+  def get(queryUUID: String): Future[Option[ClientSearchEntity]] = {
     select
       .where(_.SearchQueryUUID eqs queryUUID)
       .consistencyLevel_=(ConsistencyLevel.ONE)
       .one()
   }
 
-  def findByDate(from: String, to: String): Future[List[ClientSearchEntity]] = {
+  def get(from: String, to: String): Future[List[ClientSearchEntity]] = {
     select
       .where(_.ClientRequestTimestamp isLte to)
       .and(_.ClientRequestTimestamp isGte from)

@@ -1,4 +1,4 @@
-package databases
+package com.jactravel.databases
 
 import com.jactravel.databases.table.ClientSearch
 import com.jactravel.utils.Connection

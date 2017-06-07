@@ -1,4 +1,4 @@
-package com.jactravel
+package com.jactravel.table
 
 import com.jactravel.helper.CassandraTableSpec
 
@@ -46,13 +46,11 @@ class ClientSearchSpec extends CassandraTableSpec {
         .value(_.RequestXML, sample.RequestXML)
         .value(_.ResponseXML, sample.ResponseXML)
         .future()
-      find <- table.find(sample.SearchQueryUUID)
-      remove <- table.remove(sample.SearchQueryUUID)
-      check <- table.find(sample.SearchQueryUUID)
+      find <- table.get(sample.SearchQueryUUID)
+      check <- table.get(sample.SearchQueryUUID)
     } yield {
       checks(insert)
       find.map(_.SearchQueryUUID) shouldBe Some(sample.SearchQueryUUID)
-      checks(remove)
       check shouldBe None
     }
   }

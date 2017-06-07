@@ -1,7 +1,7 @@
 package com.jactravel.helper
 
-import databases.CassandraDatabase
-import utils.Connection.testConnector
+import com.jactravel.databases.CassandraDatabase
+import com.jactravel.utils.Connection.testConnector
 /**
   * Created by fayaz on 29.05.17.
   */
