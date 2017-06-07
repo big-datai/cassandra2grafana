@@ -1,7 +1,4 @@
-package databases.model
-
-import org.cvogt.play.json.Jsonx
-import play.api.libs.json.Format
+package com.jactravel.databases.entity
 
 /**
   * Created by fayaz on 04.06.17.
@@ -35,7 +32,3 @@ case class ClientSearchEntity(SearchQueryUUID: String,
                               SuppliersSearched: Int = 0,
                               RequestXML: String = "",
                               ResponseXML: String = "")
-
-object ClientSearchEntity {
-  implicit val fmt: Format[ClientSearchEntity] = Jsonx.formatCaseClass[ClientSearchEntity]
-}

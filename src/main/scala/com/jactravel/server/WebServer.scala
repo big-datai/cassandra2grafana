@@ -2,24 +2,31 @@ package com.jactravel.server
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model._
+import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
+import com.jactravel.databases.entity.ClientSearchEntity
+import com.jactravel.utils.JsonSupport
+import databases.Tables.clientSearchTable
 
 /**
   * Created by fayaz on 05.06.17.
   */
-object WebServer extends App {
+object WebServer extends App with JsonSupport {
 
   implicit val system = ActorSystem("my-system")
   implicit val materializer = ActorMaterializer()
   implicit val executionContext = system.dispatcher
 
   val routes: Route = {
-    path("hello") {
+    //todo: specify function
+    path("cs" / Remaining) { str =>
       get {
-        complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "<h1>Say hello to akka-http</h1>"))
+        onSuccess(clientSearchTable.find(str)) {
+          case Some(cs: ClientSearchEntity) => complete(cs)
+          case _ => complete(StatusCodes.NoContent)
+        }
       }
     }
   }

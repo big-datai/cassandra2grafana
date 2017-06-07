@@ -1,9 +1,9 @@
-package databases.table
+package com.jactravel.databases.table
 
+import com.jactravel.databases.entity.ClientSearchEntity
+import com.outworkers.phantom.Row
 import com.outworkers.phantom.connectors.RootConnector
 import com.outworkers.phantom.dsl.{ConsistencyLevel, PartitionKey, Table}
-import com.outworkers.phantom.{ResultSet, Row}
-import databases.model.ClientSearchEntity
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -83,10 +83,11 @@ abstract class ClientSearch extends Table[ClientSearch, ClientSearchEntity] with
       .one()
   }
 
-  def remove(queryUUID: String): Future[ResultSet] = {
-    delete
-      .where(_.SearchQueryUUID eqs queryUUID)
+  def findByDate(from: String, to: String): Future[List[ClientSearchEntity]] = {
+    select
+      .where(_.ClientRequestTimestamp isLte to)
+      .and(_.ClientRequestTimestamp isGte from)
       .consistencyLevel_=(ConsistencyLevel.ONE)
-      .future()
+      .fetch()
   }
 }

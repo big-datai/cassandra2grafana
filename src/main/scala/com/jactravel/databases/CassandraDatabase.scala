@@ -1,9 +1,9 @@
 package databases
 
+import com.jactravel.databases.table.ClientSearch
+import com.jactravel.utils.Connection
 import com.outworkers.phantom.database.Database
 import com.outworkers.phantom.dsl.KeySpaceDef
-import databases.table.ClientSearch
-import utils.Connection
 
 /**
   * Created by fayaz on 27.05.17.

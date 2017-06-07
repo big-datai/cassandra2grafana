@@ -1,4 +1,4 @@
-package utils
+package com.jactravel.utils
 
 import com.datastax.driver.core.SocketOptions
 import com.outworkers.phantom.connectors.{CassandraConnection, ContactPoint, ContactPoints}
