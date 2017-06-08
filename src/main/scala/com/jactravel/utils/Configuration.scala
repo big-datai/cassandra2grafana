@@ -9,6 +9,6 @@ trait Configuration {
 
   private val config = ConfigFactory.load()
 
-  final val host: String = config.getString("akka.http.host")
-  final val port: Int = config.getInt("akka.http.port")
+  final val host: String = config.getString("app.host")
+  final val port: Int = config.getInt("app.port")
 }
