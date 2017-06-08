@@ -1,8 +1,8 @@
 package com.jactravel.table
 
 import com.jactravel.helper.CassandraTableSpec
+import com.outworkers.phantom.dsl.context
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.language.postfixOps
 
 /**

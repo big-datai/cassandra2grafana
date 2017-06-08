@@ -3,9 +3,8 @@ package com.jactravel.databases.table
 import com.jactravel.databases.entity.ClientSearchEntity
 import com.outworkers.phantom.Row
 import com.outworkers.phantom.connectors.RootConnector
-import com.outworkers.phantom.dsl.{ConsistencyLevel, PartitionKey, Table}
+import com.outworkers.phantom.dsl.{ConsistencyLevel, PartitionKey, Table, context}
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 /**
