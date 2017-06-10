@@ -1,4 +1,4 @@
-package com.jactravel.models
+package com.jactravel.forms
 
 /**
   * Created by fayaz on 07.06.17.

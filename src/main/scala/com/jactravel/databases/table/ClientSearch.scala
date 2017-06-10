@@ -1,6 +1,6 @@
 package com.jactravel.databases.table
 
-import com.jactravel.databases.entity.ClientSearchEntity
+import com.jactravel.databases.entity.ClientSearchRecord
 import com.outworkers.phantom.Row
 import com.outworkers.phantom.connectors.RootConnector
 import com.outworkers.phantom.dsl.{ConsistencyLevel, PartitionKey, Table, context}
@@ -10,7 +10,7 @@ import scala.concurrent.Future
 /**
   * Created by fayaz on 04.06.17.
   */
-abstract class ClientSearch extends Table[ClientSearch, ClientSearchEntity] with RootConnector {
+abstract class ClientSearch extends Table[ClientSearch, ClientSearchRecord] with RootConnector {
   object SearchQueryUUID extends StringColumn with PartitionKey
   object ClientIP extends StringColumn
   object Host extends StringColumn
@@ -41,8 +41,8 @@ abstract class ClientSearch extends Table[ClientSearch, ClientSearchEntity] with
   object RequestXML extends StringColumn
   object ResponseXML extends StringColumn
 
-  override def fromRow(r: Row): ClientSearchEntity = {
-    ClientSearchEntity(
+  override def fromRow(r: Row): ClientSearchRecord = {
+    ClientSearchRecord(
       SearchQueryUUID(r),
       ClientIP(r),
       Host(r),
@@ -75,14 +75,14 @@ abstract class ClientSearch extends Table[ClientSearch, ClientSearchEntity] with
     )
   }
 
-  def get(queryUUID: String): Future[Option[ClientSearchEntity]] = {
+  def get(queryUUID: String): Future[Option[ClientSearchRecord]] = {
     select
       .where(_.SearchQueryUUID eqs queryUUID)
       .consistencyLevel_=(ConsistencyLevel.ONE)
       .one()
   }
 
-  def get(from: String, to: String): Future[List[ClientSearchEntity]] = {
+  def get(from: String, to: String): Future[List[ClientSearchRecord]] = {
     select
       .where(_.ClientRequestTimestamp isLte to)
       .and(_.ClientRequestTimestamp isGte from)

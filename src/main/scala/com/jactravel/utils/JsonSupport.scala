@@ -1,8 +1,8 @@
 package com.jactravel.utils
 
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
-import com.jactravel.databases.entity.ClientSearchEntity
-import com.jactravel.models.DurationForm
+import com.jactravel.databases.entity.{ClientSearchRecord, SearchCountRecord}
+import com.jactravel.forms.DurationForm
 import spray.json.{JsNumber, _}
 
 import scala.language.implicitConversions
@@ -18,10 +18,15 @@ trait JsonSupport extends SprayJsonSupport with JsonHelperImplicits {
   implicit val durationForm = jsonFormat3(DurationForm)
 
   /**
+    * SearchCount object JSON parser
+    */
+  implicit val searchCountFormat = jsonFormat3(SearchCountRecord)
+
+  /**
     * ClientSearchEntity object JSON parser
     */
-  implicit object ClientFormat extends RootJsonFormat[ClientSearchEntity] {
-    override def write(obj: ClientSearchEntity): JsValue = JsObject(
+  implicit object ClientFormat extends RootJsonFormat[ClientSearchRecord] {
+    override def write(obj: ClientSearchRecord): JsValue = JsObject(
       "SearchQueryUUID" -> JsString(obj.SearchQueryUUID),
       "ClientIP" -> JsString(obj.ClientIP),
       "Host" -> JsString(obj.Host),
@@ -53,7 +58,7 @@ trait JsonSupport extends SprayJsonSupport with JsonHelperImplicits {
       "ResponseXML" -> JsString(obj.ResponseXML)
     )
 
-    override def read(json: JsValue): ClientSearchEntity = {
+    override def read(json: JsValue): ClientSearchRecord = {
       val fields = json.asJsObject.getFields(
         "SearchQueryUUID", "ClientIP", "Host", "ClientRequestTimestamp",
         "ClientResponseTimestamp", "ForwardedRequestTimestamp", "ForwardedResponseTimestamp",
@@ -64,7 +69,7 @@ trait JsonSupport extends SprayJsonSupport with JsonHelperImplicits {
         "RequestXML", "ResponseXML")
       fields match {
         case seq: Seq[JsValue] =>
-          ClientSearchEntity(
+          ClientSearchRecord(
             seq.head, seq(1), seq(2), seq(4), seq(5), seq(6), seq(7),
             seq(8), seq(9), seq(10), seq(11), seq(12), seq(13), seq(14),
             seq(15), seq(16), seq(17), seq(18), seq(19), seq(20), seq(21),

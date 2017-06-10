@@ -3,7 +3,7 @@ package com.jactravel.databases.entity
 /**
   * Created by fayaz on 04.06.17.
   */
-case class ClientSearchEntity(SearchQueryUUID: String,
+case class ClientSearchRecord(SearchQueryUUID: String,
                               ClientIP: String = "",
                               Host: String = "",
                               ClientRequestTimestamp: String = "",
