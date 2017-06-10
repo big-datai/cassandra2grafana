@@ -22,7 +22,7 @@ class WebServerSpec
 
   "WebServer" should {
     "return OK response" in {
-      Get("/") ~> clientSearchRoutes ~> check {
+      Get("/") ~> combinedRoutes ~> check {
         status shouldEqual StatusCodes.OK
         responseAs[String] shouldEqual "test connection"
       }
