@@ -5,7 +5,7 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import com.jactravel.databases.Tables
 import com.jactravel.databases.entity.HourStatisticsRecord
-import com.jactravel.utils.JsonSupport
+import com.jactravel.utils.{Constants, JsonSupport}
 import org.joda.time.DateTime
 
 /**
@@ -14,12 +14,17 @@ import org.joda.time.DateTime
 trait HourStatisticsRoutes extends JsonSupport {
 
   /**
-    * SearchCount operation routes
+    * HoursStatistics operation routes
     */
   final val hourStatisticsRoutes: Route = {
-    path("count" / "day" / "search") {
+    path("count" / "hours" / "search") {
       get {
-        parameter('date.as[String] ? DateTime.now.toString("yyyy-MMM-dd"), 'from.as[Int], 'to.as[Int], 'interval.as[Int]) { (date, from, to, interval) =>
+        parameter(
+          'date.as[String] ? DateTime.now.toString(Constants.HOUR_PATTERN),
+          'from.as[Int],
+          'to.as[Int],
+          'interval.as[Int]
+        ) { (date, from, to, interval) =>
           onSuccess(Tables.hoursTable.getCount(date, from, to)) {
             case Nil => complete(StatusCodes.NoContent)
             case lst: List[(Int, Int)] =>
@@ -34,7 +39,7 @@ trait HourStatisticsRoutes extends JsonSupport {
         }
       }
     } ~
-    path("count" / "day" / "search" / "all") {
+    path("count" / "hours" / "search" / "all") {
       get {
         parameter('date.as[String] ? DateTime.now.toString("yyyy-MMM-dd"), 'limit.as[Int] ? 100) { (date, limit) =>
           onSuccess(Tables.hoursTable.getAll(date, limit)) {

@@ -41,6 +41,8 @@ abstract class ClientSearchTable extends Table[ClientSearchTable, ClientSearchRe
   object RequestXML extends StringColumn
   object ResponseXML extends StringColumn
 
+  override def tableName: String = "client_search"
+  
   override def fromRow(r: Row): ClientSearchRecord = {
     ClientSearchRecord(
       SearchQueryUUID(r),

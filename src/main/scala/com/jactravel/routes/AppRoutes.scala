@@ -10,7 +10,7 @@ import scala.concurrent.ExecutionContextExecutor
 /**
   * Created by fayaz on 07.06.17.
   */
-trait AppRoutes extends HourStatisticsRoutes with ClientSearchRoutes {
+trait AppRoutes extends HourStatisticsRoutes with ClientSearchRoutes with DaysStatisticsRoutes {
   implicit val system: ActorSystem
   implicit val materializer: ActorMaterializer
   implicit val executionContext: ExecutionContextExecutor
@@ -23,5 +23,5 @@ trait AppRoutes extends HourStatisticsRoutes with ClientSearchRoutes {
     }
   }
 
-  final val combinedRoutes: Route = applicationRoutes ~ hourStatisticsRoutes
+  final val combinedRoutes: Route = applicationRoutes ~ hourStatisticsRoutes ~ daysStatisticsRoutes
 }
