@@ -1,12 +1,13 @@
 package com.jactravel.utils
 
 import com.datastax.driver.core.SocketOptions
+import com.jactravel.utils.Configuration._
 import com.outworkers.phantom.connectors.{CassandraConnection, ContactPoint, ContactPoints}
 
 /**
   * Created by fayaz on 27.05.17.
   */
-object Connection extends Configuration {
+object Connection {
 
   /**
     * Cassandra connector

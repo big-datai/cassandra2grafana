@@ -6,6 +6,6 @@ import org.slf4j.LoggerFactory
 /**
   * Created by fayaz on 09.06.17.
   */
-trait DefaultLogging {
+object DefaultLogging {
   final val log: Logger = Logger(LoggerFactory.getLogger(this.getClass))
 }

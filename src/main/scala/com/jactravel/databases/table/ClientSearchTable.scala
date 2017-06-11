@@ -10,7 +10,7 @@ import scala.concurrent.Future
 /**
   * Created by fayaz on 04.06.17.
   */
-abstract class ClientSearch extends Table[ClientSearch, ClientSearchRecord] with RootConnector {
+abstract class ClientSearchTable extends Table[ClientSearchTable, ClientSearchRecord] with RootConnector {
   object SearchQueryUUID extends StringColumn with PartitionKey
   object ClientIP extends StringColumn
   object Host extends StringColumn

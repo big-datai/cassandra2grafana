@@ -24,7 +24,7 @@ class WebServerSpec
     "return OK response" in {
       Get("/") ~> combinedRoutes ~> check {
         status shouldEqual StatusCodes.OK
-        responseAs[String] shouldEqual "test connection"
+        responseAs[String] shouldEqual "Test connection"
       }
     }
   }

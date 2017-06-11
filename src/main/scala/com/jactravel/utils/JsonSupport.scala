@@ -1,7 +1,7 @@
 package com.jactravel.utils
 
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
-import com.jactravel.databases.entity.{ClientSearchRecord, SearchCountRecord}
+import com.jactravel.databases.entity.{ClientSearchRecord, DayStatisticsRecord, HourStatisticsRecord}
 import spray.json.{JsNumber, _}
 
 import scala.language.implicitConversions
@@ -12,9 +12,14 @@ import scala.language.implicitConversions
 trait JsonSupport extends SprayJsonSupport with JsonHelperImplicits {
 
   /**
-    * SearchCount object JSON parser
+    * HourStatisticsRecord object JSON parser
     */
-  implicit val searchCountFormat = jsonFormat3(SearchCountRecord)
+  implicit val hourStatFormat = jsonFormat3(HourStatisticsRecord)
+
+  /**
+    * DayStatisticsRecord object JSON parser
+    */
+  implicit val dayStatFormat = jsonFormat3(DayStatisticsRecord)
 
   /**
     * ClientSearchEntity object JSON parser

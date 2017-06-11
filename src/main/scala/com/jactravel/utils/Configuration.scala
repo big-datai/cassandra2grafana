@@ -5,7 +5,7 @@ import com.typesafe.config.ConfigFactory
 /**
   * Created by fayaz on 08.06.17.
   */
-trait Configuration {
+object Configuration {
 
   private val config = ConfigFactory.load()
 
