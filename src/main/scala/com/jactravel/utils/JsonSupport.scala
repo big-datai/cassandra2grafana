@@ -2,7 +2,6 @@ package com.jactravel.utils
 
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import com.jactravel.databases.entity.{ClientSearchRecord, SearchCountRecord}
-import com.jactravel.forms.DurationForm
 import spray.json.{JsNumber, _}
 
 import scala.language.implicitConversions
@@ -11,11 +10,6 @@ import scala.language.implicitConversions
   * Created by fayaz on 05.06.17.
   */
 trait JsonSupport extends SprayJsonSupport with JsonHelperImplicits {
-
-  /**
-    * DurationForm object JSON parser
-    */
-  implicit val durationForm = jsonFormat3(DurationForm)
 
   /**
     * SearchCount object JSON parser

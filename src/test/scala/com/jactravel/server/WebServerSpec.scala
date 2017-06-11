@@ -2,7 +2,7 @@ package com.jactravel.server
 
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.testkit.ScalatestRouteTest
-import com.jactravel.routes.CustomRoutes
+import com.jactravel.routes.AppRoutes
 import org.scalatest.{Matchers, WordSpec}
 
 import scala.concurrent.ExecutionContextExecutor
@@ -15,7 +15,7 @@ class WebServerSpec
   extends WordSpec
     with Matchers
     with ScalatestRouteTest
-    with CustomRoutes {
+    with AppRoutes {
 
   override implicit val executionContext: ExecutionContextExecutor = system.dispatcher
 
