@@ -14,22 +14,7 @@ trait JsonSupport extends SprayJsonSupport with JsonHelperImplicits {
   /**
     * HourStatisticsRecord object JSON parser
     */
-  implicit val hourStatFormat = jsonFormat3(HourStatisticsRecord)
-
-  /**
-    * DayStatisticsRecord object JSON parser
-    */
-  implicit val dayStatFormat = jsonFormat3(DayStatisticsRecord)
-
-  /**
-    * WeekStatisticsRecord object JSON parser
-    */
-  implicit val weekStatFormat = jsonFormat3(WeekStatisticsRecord)
-
-  /**
-    * YearStatisticsRecord object JSON parser
-    */
-  implicit val yearStatFormat = jsonFormat2(YearStatisticsRecord)
+  implicit val hourStatFormat = jsonFormat3(SearchInfoRecord)
 
   /**
     * ClientSearchRecord object JSON parser

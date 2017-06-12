@@ -9,6 +9,10 @@ lazy val Versions = new {
   val akka = "10.0.7"
 }
 
+packageName in Docker := "cassandra_rest_api"
+version in Docker := "latest"
+maintainer in Docker := "Big Data Spark Ninja Team"
+
 libraryDependencies ++= Seq(
   "org.scalatest" % "scalatest_2.12" % "3.0.3" % Test,
   "com.outworkers" % "util-testing_2.12" % "0.36.0" % Test,
