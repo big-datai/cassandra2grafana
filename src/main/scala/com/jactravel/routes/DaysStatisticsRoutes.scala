@@ -19,7 +19,12 @@ trait DaysStatisticsRoutes extends JsonSupport {
   final val daysStatisticsRoutes: Route = {
     path("count" / "day" / "search") {
       get {
-        parameter('date.as[String] ? DateTime.now().toString(Constants.DAY_PATTERN), 'from.as[Int], 'to.as[Int], 'interval.as[Int]) { (date, from, to, interval) =>
+        parameter(
+          'date.as[String] ? DateTime.now().toString(Constants.DAY_PATTERN),
+          'from.as[Int],
+          'to.as[Int],
+          'interval.as[Int]
+        ) { (date, from, to, interval) =>
           onSuccess(Tables.daysTable.get(date, from, to)) {
             case Nil => complete(StatusCodes.NoContent)
             case lst: List[(Int, Long)] =>

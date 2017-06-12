@@ -1,7 +1,7 @@
 package com.jactravel.utils
 
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
-import com.jactravel.databases.entity.{ClientSearchRecord, DayStatisticsRecord, HourStatisticsRecord}
+import com.jactravel.databases.entity._
 import spray.json.{JsNumber, _}
 
 import scala.language.implicitConversions
@@ -22,7 +22,17 @@ trait JsonSupport extends SprayJsonSupport with JsonHelperImplicits {
   implicit val dayStatFormat = jsonFormat3(DayStatisticsRecord)
 
   /**
-    * ClientSearchEntity object JSON parser
+    * WeekStatisticsRecord object JSON parser
+    */
+  implicit val weekStatFormat = jsonFormat3(WeekStatisticsRecord)
+
+  /**
+    * YearStatisticsRecord object JSON parser
+    */
+  implicit val yearStatFormat = jsonFormat2(YearStatisticsRecord)
+
+  /**
+    * ClientSearchRecord object JSON parser
     */
   implicit object ClientFormat extends RootJsonFormat[ClientSearchRecord] {
     override def write(obj: ClientSearchRecord): JsValue = JsObject(
