@@ -18,7 +18,10 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" % "akka-http-spray-json_2.12" % Versions.akka,
   "com.typesafe.akka" % "akka-http-testkit_2.12" % Versions.akka,
   "com.typesafe.scala-logging" % "scala-logging_2.12" % "3.5.0",
-  "ch.qos.logback" % "logback-classic" % "1.2.3"
+  "ch.qos.logback" % "logback-classic" % "1.2.3",
+  "io.swagger" % "swagger-jaxrs" % "1.5.13",
+  "com.github.swagger-akka-http" %% "swagger-akka-http" % "0.9.2",
+  "ch.megard" %% "akka-http-cors" % "0.2.1"
 )
 
 PhantomSbtPlugin.projectSettings
