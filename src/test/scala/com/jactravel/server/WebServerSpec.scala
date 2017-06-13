@@ -2,7 +2,7 @@ package com.jactravel.server
 
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.testkit.ScalatestRouteTest
-import com.jactravel.routes.AppRoutes
+import com.jactravel.routes.ApplicationRoutes
 import org.scalatest.{Matchers, WordSpec}
 
 import scala.concurrent.ExecutionContextExecutor
@@ -14,15 +14,14 @@ import scala.concurrent.ExecutionContextExecutor
 class WebServerSpec
   extends WordSpec
     with Matchers
-    with ScalatestRouteTest
-    with AppRoutes {
+    with ApplicationRoutes
+    with ScalatestRouteTest {
 
-  override implicit val executionContext: ExecutionContextExecutor = system.dispatcher
-
+  implicit val executionContext: ExecutionContextExecutor = system.dispatcher
 
   "WebServer" should {
     "return OK response" in {
-      Get("/") ~> combinedRoutes ~> check {
+      Get("/") ~> applicationRoutes ~> check {
         status shouldEqual StatusCodes.OK
         responseAs[String] shouldEqual "Test connection"
       }

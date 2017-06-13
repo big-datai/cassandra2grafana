@@ -8,7 +8,8 @@ resolvers ++= Seq(
   Resolver.typesafeRepo("releases"),
   Resolver.bintrayRepo("websudos", "oss-releases"),
   Resolver.url("Maven ivy Websudos", url(Resolver.DefaultMavenRepositoryRoot))(websudosPattern),
-  Resolver.jcenterRepo
+  Resolver.jcenterRepo,
+  Resolver.sonatypeRepo("snapshots")
 )
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "1.1.6")
