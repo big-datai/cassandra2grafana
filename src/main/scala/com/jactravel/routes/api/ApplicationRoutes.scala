@@ -1,4 +1,4 @@
-package com.jactravel.routes
+package com.jactravel.routes.api
 
 import akka.http.scaladsl.server.Directives.{complete, get, pathSingleSlash}
 import akka.http.scaladsl.server.Route

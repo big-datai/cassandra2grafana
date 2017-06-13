@@ -2,7 +2,7 @@ package com.jactravel.server
 
 import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.testkit.ScalatestRouteTest
-import com.jactravel.routes.ApplicationRoutes
+import com.jactravel.routes.api.ApplicationRoutes
 import org.scalatest.{Matchers, WordSpec}
 
 import scala.concurrent.ExecutionContextExecutor
