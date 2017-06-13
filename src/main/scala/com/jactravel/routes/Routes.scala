@@ -11,7 +11,7 @@ import scala.concurrent.ExecutionContextExecutor
 /**
   * Created by fayaz on 07.06.17.
   */
-trait AppRoutes extends ApplicationRoutes with SearchInfoRoutes with SwaggerDocRoutes {
+trait Routes extends ApplicationRoutes with SwaggerDocRoutes with SearchInfoRoutes {
   implicit val actorSystem: ActorSystem
   implicit val materializer: ActorMaterializer
   implicit val executionContext: ExecutionContextExecutor

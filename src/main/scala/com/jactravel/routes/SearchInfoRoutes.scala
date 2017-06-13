@@ -14,31 +14,31 @@ import org.joda.time.DateTime
 /**
   * Created by fayaz on 11.06.17.
   */
-@Api(value = "/search", description = "Search Info Api", produces = "application/json", tags = Array("SearchInfo"))
+@Api(value = "/search", produces = "application/json")
 @Path("/search")
 trait SearchInfoRoutes extends JsonSupport {
 
   /**
-    * HoursStatistics operation routes
+    * Search Info operation routes
     */
-  final val searchInfoRoutes: Route = getCount ~ getAllCount
+  final val searchInfoRoutes: Route = getCount ~ getAll
 
-  @Path("/search/{date}/{from}/{to}/{interval}/count")
-  @ApiOperation(httpMethod = "GET", value = "")
+  @Path("/count{date}{from}{to}{interval}")
+  @ApiOperation(httpMethod = "GET", value = "Get count of searches per time interval", tags = Array("Search Info"))
   @ApiImplicitParams(Array(
-    new ApiImplicitParam(name = "date", value = "Searched hours Date", required = false, dataType = "string", paramType = "path"),
-    new ApiImplicitParam(name = "from", value = "start time", required = true, dataType = "int", paramType = "path"),
-    new ApiImplicitParam(name = "date", value = "end time", required = true, dataType = "int", paramType = "path"),
-    new ApiImplicitParam(name = "date", value = "time interval", required = true, dataType = "int", paramType = "path")
+    new ApiImplicitParam(name = "date", value = "Searched hours Date in format yyyy-MMM-dd", required = false, dataType = "string", paramType = "path"),
+    new ApiImplicitParam(name = "from", value = "start time", required = true, dataType = "integer", paramType = "path"),
+    new ApiImplicitParam(name = "to", value = "end time", required = true, dataType = "integer", paramType = "path"),
+    new ApiImplicitParam(name = "interval", value = "time interval", required = true, dataType = "integer", paramType = "path")
   ))
   @ApiResponses(Array(
-    new ApiResponse(code = 200, message = "", response = classOf[List[(Int, Int)]])
+    new ApiResponse(code = 200, message = "", response = classOf[(Int, Int)], responseContainer = "List")
   ))
-  private def getCount = {
+  def getCount: Route = {
     get {
-      path("count" / "search") {
+      path("search" / "count") {
         parameter(
-          'date.as[String] ? DateTime.now.toString(Constants.HOUR_PATTERN),
+          'date.as[String] ? DateTime.now.toString(Constants.FULL_DATE_PATTERN),
           'from.as[Int],
           'to.as[Int],
           'interval.as[Int]
@@ -59,18 +59,18 @@ trait SearchInfoRoutes extends JsonSupport {
     }
   }
 
-  @Path("/all/{date}/{limit}")
-  @ApiOperation(httpMethod = "GET", value = "")
+  @Path("/all")
+  @ApiOperation(httpMethod = "GET", value = "Getting limited numbers of entity", tags = Array("Search Info"))
   @ApiImplicitParams(Array(
-    new ApiImplicitParam(name = "date", value = "Searched hours Date", required = false, dataType = "string", paramType = "path"),
+    new ApiImplicitParam(name = "date", value = "Searched hours date in format yyyy-MMM-dd", required = false, dataType = "string", paramType = "path"),
     new ApiImplicitParam(name = "limit", value = " limit of retrieved items", required = false, dataType = "int", paramType = "path")
   ))
   @ApiResponses(Array(
     new ApiResponse(code = 200, message = "", response = classOf[List[SearchInfoRecord]])
   ))
-  private def getAllCount = {
+  def getAll: Route = {
     get {
-      path("count" / "search" / "all") {
+      path("search" / "all") {
         parameter('date.as[String] ? DateTime.now.toString("yyyy-MMM-dd"), 'limit.as[Int] ? 100) { (date, limit) =>
           onSuccess(Tables.searchInfo.getAll(date, limit)) {
             case Nil => complete(StatusCodes.NoContent)
