@@ -1,4 +1,4 @@
-package com.jactravel.utils.swagger
+package com.jactravel.routes.swagger
 
 import akka.http.scaladsl.model.{HttpEntity, MediaTypes}
 import akka.http.scaladsl.server.Route
@@ -13,7 +13,7 @@ import scala.reflect.runtime.{universe => ru}
 /**
   * Created by fayaz on 12.06.17.
   */
-trait SwaggerDocService extends SwaggerHttpService with HasActorSystem {
+trait SwaggerDocRoutes extends SwaggerHttpService with HasActorSystem {
 
   override val apiTypes = Seq(ru.typeOf[SearchInfoRoutes])
 
