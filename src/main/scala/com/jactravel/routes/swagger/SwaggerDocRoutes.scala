@@ -4,7 +4,7 @@ import akka.http.scaladsl.model.{HttpEntity, MediaTypes}
 import akka.http.scaladsl.server.Route
 import com.github.swagger.akka._
 import com.github.swagger.akka.model.Info
-import com.jactravel.routes.api.SearchInfoRoutes
+import com.jactravel.routes.api.QueryProxyRequestRoutes
 import com.jactravel.utils.Configuration.swaggerPort
 import io.swagger.models.ExternalDocs
 
@@ -15,7 +15,7 @@ import scala.reflect.runtime.{universe => ru}
   */
 trait SwaggerDocRoutes extends SwaggerHttpService with HasActorSystem {
 
-  override val apiTypes = Seq(ru.typeOf[SearchInfoRoutes])
+  override val apiTypes = Seq(ru.typeOf[QueryProxyRequestRoutes])
 
   override val host = s"localhost:$swaggerPort"
 

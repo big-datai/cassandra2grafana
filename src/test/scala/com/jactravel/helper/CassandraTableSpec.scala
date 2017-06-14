@@ -15,7 +15,6 @@ trait CassandraTableSpec
   with ScalaFutures
   with OptionValues
   with BeforeAndAfterAll
-  with Samples
   with EmbeddedCassandraLike
   with com.jactravel.utils.Connection.testConnector.Connector {
 
