@@ -52,6 +52,7 @@ abstract class QueryProxyRequestTable extends Table[QueryProxyRequestTable, Quer
     select
       .where(_.client_request_utc_timestamp lte to)
       .and(_.client_request_utc_timestamp gte from)
+      .limit(300) // need remove in future after tuning server
       .allowFiltering()
       .consistencyLevel_=(ConsistencyLevel.ONE)
       .fetch()

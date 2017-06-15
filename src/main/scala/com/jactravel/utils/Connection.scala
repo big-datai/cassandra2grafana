@@ -15,7 +15,7 @@ object Connection {
   lazy val connector: CassandraConnection = ContactPoints(cassandraHosts, cassandraPort)
     .withClusterBuilder(_.withSocketOptions(
       new SocketOptions()
-        .setReadTimeoutMillis(1500)
+        .setReadTimeoutMillis(15000)
         .setConnectTimeoutMillis(20000)
     ))
     .keySpace(cassandraKeySpace)
