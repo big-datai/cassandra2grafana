@@ -2,6 +2,8 @@ language: scala
 jdk: oraclejdk8
 scala:
   - 2.12.0
+services:
+  - docker
 script:
   - sbt clean compile test docker:publishLocal
 after_success:
