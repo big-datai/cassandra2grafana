@@ -1,6 +1,11 @@
 language: scala
 jdk: oraclejdk8
 scala:
-- 2.12.0
+  - 2.12.0
 script:
-- sbt clean test
+  - sbt clean compile test docker:publishLocal
+after_success:
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then
+    docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+    docker push faiaz/cassandra_rest_api;
+    fi
