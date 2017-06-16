@@ -4,8 +4,11 @@ import com.jactravel.databases.entity.{BookRoomInfo, BookingRequestRecord}
 import com.jactravel.utils.JsonSupport
 import com.outworkers.phantom.Row
 import com.outworkers.phantom.connectors.RootConnector
-import com.outworkers.phantom.dsl.{Ascending, ClusteringOrder, PartitionKey, Table}
+import com.outworkers.phantom.dsl.{Ascending, ClusteringOrder, ConsistencyLevel, PartitionKey, Table, context}
+import org.joda.time.DateTime
 import spray.json._
+
+import scala.concurrent.Future
 
 /**
   * Created by fayaz on 14.06.17.
@@ -52,5 +55,15 @@ abstract class BookingRequestTable extends Table[BookingRequestTable, BookingReq
       currency_id(r),
       pre_booking_token(r)
     )
+  }
+
+  def getBookingCountByTime(from: DateTime, to: DateTime): Future[List[DateTime]] = {
+    select(_.start_utc_timestamp)
+      .where(_.start_utc_timestamp isLte to)
+      .and(_.start_utc_timestamp isGte from)
+      .limit(300) // need remove in future after tuning server
+      .allowFiltering()
+      .consistencyLevel_=(ConsistencyLevel.ONE)
+      .fetch()
   }
 }

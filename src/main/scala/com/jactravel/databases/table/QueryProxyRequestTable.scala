@@ -48,10 +48,21 @@ abstract class QueryProxyRequestTable extends Table[QueryProxyRequestTable, Quer
     )
   }
 
-  def getRecordByTime(from: DateTime, to: DateTime): Future[List[QueryProxyRequestRecord]] = {
-    select
+  def getSearchesCountByTime(from: DateTime, to: DateTime): Future[List[DateTime]] = {
+    select(_.client_request_utc_timestamp)
       .where(_.client_request_utc_timestamp lte to)
       .and(_.client_request_utc_timestamp gte from)
+      .limit(300) // need remove in future after tuning server
+      .allowFiltering()
+      .consistencyLevel_=(ConsistencyLevel.ONE)
+      .fetch()
+  }
+
+  def getSearchesSuccessCountByTime(from: DateTime, to: DateTime): Future[List[DateTime]] = {
+    select(_.client_request_utc_timestamp)
+      .where(_.client_request_utc_timestamp lte to)
+      .and(_.client_request_utc_timestamp gte from)
+      .and(_.success is "0")
       .limit(300) // need remove in future after tuning server
       .allowFiltering()
       .consistencyLevel_=(ConsistencyLevel.ONE)

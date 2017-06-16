@@ -1,11 +1,10 @@
 package com.jactravel.routes
 
 import akka.actor.ActorSystem
+import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
-import ch.megard.akka.http.cors.scaladsl.CorsDirectives._
-import com.jactravel.routes.api.{ApplicationRoutes, QueryProxyRequestRoutes}
-import com.jactravel.routes.swagger.SwaggerDocRoutes
+import com.jactravel.routes.api.{ApplicationRoutes, BookingRequestRoutes, QueryProxyRequestRoutes}
 
 import scala.concurrent.ExecutionContextExecutor
 
@@ -14,13 +13,11 @@ import scala.concurrent.ExecutionContextExecutor
   */
 trait Routes
   extends ApplicationRoutes
-    with SwaggerDocRoutes
-    with QueryProxyRequestRoutes {
+    with QueryProxyRequestRoutes
+    with BookingRequestRoutes {
   implicit val actorSystem: ActorSystem
   implicit val materializer: ActorMaterializer
   implicit val executionContext: ExecutionContextExecutor
 
-  final val combinedRoutes: Route = cors() {
-    routes ~ applicationRoutes ~ queryProxyRequestRoutes
-  }
+  final val combinedRoutes: Route = applicationRoutes ~ queryRoutes ~ bookingRoutes
 }

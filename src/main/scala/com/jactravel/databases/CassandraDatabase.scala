@@ -9,13 +9,13 @@ import com.outworkers.phantom.dsl.KeySpaceDef
   * Created by fayaz on 27.05.17.
   */
 class CassandraDatabase(val keySpace: KeySpaceDef) extends Database[CassandraDatabase](keySpace) {
-  object queryProxyRequest extends QueryProxyRequestTable with Connector
+  object queryProxyRequestTable extends QueryProxyRequestTable with Connector
   object bookingRequestTable extends BookingRequestTable with Connector
 }
 
 object Tables {
   object CassandraDatabase extends CassandraDatabase(Connection.connector)
 
-  final val queryProxyRequestTable = CassandraDatabase.queryProxyRequest
+  final val queryProxyRequestTable = CassandraDatabase.queryProxyRequestTable
   final val bookingRequestTable = CassandraDatabase.bookingRequestTable
 }
