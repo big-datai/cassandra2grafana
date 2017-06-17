@@ -12,7 +12,6 @@ lazy val Versions = new {
 
 packageName in Docker := "cassandra_rest_api"
 version in Docker := "latest"
-maintainer in Docker := "Big Data Spark Ninja Team"
 dockerRepository := Some("faiaz")
 
 
