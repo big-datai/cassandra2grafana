@@ -5,7 +5,9 @@ import com.jactravel.utils.JsonSupport
 import com.outworkers.phantom.Row
 import com.outworkers.phantom.connectors.RootConnector
 import com.outworkers.phantom.dsl.{Ascending, ClusteringOrder, ConsistencyLevel, PartitionKey, Table, context}
+import com.outworkers.phantom.streams._
 import org.joda.time.DateTime
+import play.api.libs.iteratee.{Enumeratee, Iteratee}
 import spray.json._
 
 import scala.concurrent.Future
@@ -66,4 +68,24 @@ abstract class BookingRequestTable extends Table[BookingRequestTable, BookingReq
       .consistencyLevel_=(ConsistencyLevel.ONE)
       .fetch()
   }
+
+
+  def getBookingCountByTimeStreamly(from: DateTime, to: DateTime): Future[List[DateTime]] = {
+
+    val enumFilter: Enumeratee[BookingRequestRecord, BookingRequestRecord] = {
+      Enumeratee.filter[BookingRequestRecord](e =>
+        (e.start_utc_timestamp isBefore to) &&
+        (e.start_utc_timestamp isAfter from))
+    }
+
+    val enumMapper: Enumeratee[BookingRequestRecord, DateTime] = {
+      Enumeratee.mapInput[BookingRequestRecord](e => e.map(_.start_utc_timestamp))
+    }
+
+    select.fetchEnumerator()
+      .through(enumFilter)
+      .through(enumMapper)
+      .run(Iteratee.getChunks)
+  }
+
 }

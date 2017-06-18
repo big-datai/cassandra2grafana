@@ -1,4 +1,4 @@
-name := """Priam"""
+name := """cassandra2grafana"""
 version := "1.0-SNAPSHOT"
 scalaVersion := "2.12.0"
 
@@ -10,9 +10,8 @@ lazy val Versions = new {
   val phantom = "2.10.0"
 }
 
-packageName in Docker := "cassandra_rest_api"
+packageName in Docker := "cassandra2grafana"
 version in Docker := "latest"
-maintainer in Docker := "Big Data Spark Ninja Team"
 dockerRepository := Some("faiaz")
 
 

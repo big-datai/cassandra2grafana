@@ -4,7 +4,9 @@ import com.jactravel.databases.entity.QueryProxyRequestRecord
 import com.outworkers.phantom.Row
 import com.outworkers.phantom.connectors.RootConnector
 import com.outworkers.phantom.dsl.{Ascending, ClusteringOrder, ConsistencyLevel, PartitionKey, Table, context}
+import com.outworkers.phantom.streams._
 import org.joda.time.DateTime
+import play.api.libs.iteratee.{Enumeratee, Iteratee}
 
 import scala.concurrent.Future
 
@@ -67,5 +69,23 @@ abstract class QueryProxyRequestTable extends Table[QueryProxyRequestTable, Quer
       .allowFiltering()
       .consistencyLevel_=(ConsistencyLevel.ONE)
       .fetch()
+  }
+
+  def getSearchesCountByTimeStreamly(from: DateTime, to: DateTime): Future[List[DateTime]] = {
+
+    val enumFilter: Enumeratee[QueryProxyRequestRecord, QueryProxyRequestRecord] = {
+      Enumeratee.filter[QueryProxyRequestRecord](e =>
+        (e.client_request_utc_timestamp isBefore to) &&
+        (e.client_request_utc_timestamp isAfter from))
+    }
+
+    val enumMapper: Enumeratee[QueryProxyRequestRecord, DateTime] = {
+      Enumeratee.mapInput[QueryProxyRequestRecord](e => e.map(_.client_request_utc_timestamp))
+    }
+
+    select.fetchEnumerator()
+      .through(enumFilter)
+      .through(enumMapper)
+      .run(Iteratee.getChunks)
   }
 }
