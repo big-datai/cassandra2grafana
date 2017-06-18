@@ -4,11 +4,12 @@ import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import com.jactravel.databases.Tables
-import com.jactravel.routes.RoutesHelper._
 import com.jactravel.utils.DefaultLogging.log
 import com.jactravel.utils.JsonSupport
+import com.jactravel.utils.RoutesHelper._
 import org.joda.time.DateTime
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.language.implicitConversions
 /**
   * Created by fayaz on 14.06.17.
@@ -28,7 +29,26 @@ trait QueryProxyRequestRoutes extends JsonSupport {
               complete(StatusCodes.NoContent)
             case lst: List[DateTime] =>
               log.info(s"Retrieved non empty list from request")
-              complete(spread(lst, from, to, interval * 1000))
+              complete(spreadTimeSeries(lst, from, to, interval * 1000))
+          }
+        }
+      }
+    }
+  }
+
+  def getSearchCountStreamly: Route = {
+    get {
+      path("query" / "count" / "search" / "streamly") {
+        parameter('from.as[String], 'to.as[String], 'interval.as[Int]) { (from, to, interval) =>
+          log.info(s"Retrieve search count request with params { from: $from, to: $to, interval: $interval seconds}")
+          onSuccess(Tables.queryProxyRequestTable.getSearchesCountByTimeStreamly(
+            from, to)) {
+            case Nil =>
+              log.info("Retrieved empty list from request")
+              complete(StatusCodes.NoContent)
+            case lst: List[DateTime] =>
+              log.info(s"Retrieved non empty list from request")
+              complete(spreadTimeSeries(lst, from, to, interval * 1000))
           }
         }
       }
@@ -46,7 +66,7 @@ trait QueryProxyRequestRoutes extends JsonSupport {
               complete(StatusCodes.NoContent)
             case lst: List[DateTime] =>
               log.info(s"Retrieved non empty list from cassandra for success count request")
-              complete(spread(lst, from, to, interval * 1000))
+              complete(spreadTimeSeries(lst, from, to, interval * 1000))
           }
         }
       }

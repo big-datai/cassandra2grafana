@@ -7,10 +7,10 @@ import org.joda.time.DateTime
   */
 case class RangeForm(from: DateTime, to: DateTime)
 
-case class TargetForm(refId: String, target: String)
+case class TargetForm(target: String, refId: String, `type`: String)
 
 case class PostForm(range: RangeForm,
-                    interval: String,
+                    intervalMs: Long,
                     targets: List[TargetForm],
                     format: String,
                     maxDataPoints: Int)
