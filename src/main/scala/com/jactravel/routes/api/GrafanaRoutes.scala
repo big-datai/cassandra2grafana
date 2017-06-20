@@ -26,11 +26,11 @@ trait GrafanaRoutes extends JsonSupport {
       path("query") {
         entity(as[PostForm]) { form =>
           val interval = form.intervalMs
+          val from = form.range.from
+          val to = form.range.to
           val res = form.targets map {
 
             case TargetForm(SEARCHES_TODAY, _, _) => // Today target calculus
-              val from = form.range.from
-              val to = form.range.to
               Tables.queryProxyRequestTable.getSearchesCountByTime(from, to) map {
                 case lst: List[DateTime] =>
                   log.info(s"retrieved non empty list for $SEARCHES_TODAY")
@@ -44,9 +44,7 @@ trait GrafanaRoutes extends JsonSupport {
               }
 
             case TargetForm(SEARCHES_YESTERDAY, _, _) => // Yesterday target calculus
-              val from = form.range.from.minusDays(1)
-              val to = form.range.to.minusDays(1)
-              Tables.queryProxyRequestTable.getSearchesCountByTime(from, to) map {
+              Tables.queryProxyRequestTable.getSearchesCountByTime(from.minusDays(1), to.minusDays(1)) map {
                 case lst: List[DateTime] =>
                   log.info(s"retrieved non empty list for $SEARCHES_YESTERDAY")
                   JsObject(
@@ -59,9 +57,7 @@ trait GrafanaRoutes extends JsonSupport {
               }
 
             case TargetForm(SEARCHES_LAST_WEEK, _, _) => // Last week target calculus
-              val from = form.range.from.minusWeeks(1)
-              val to = form.range.to.minusWeeks(1)
-              Tables.queryProxyRequestTable.getSearchesCountByTime(from, to) map {
+              Tables.queryProxyRequestTable.getSearchesCountByTime(from.minusWeeks(1), to.minusWeeks(1)) map {
                 case lst: List[DateTime] =>
                   log.info(s"retrieved non empty list for $SEARCHES_LAST_WEEK")
                   JsObject(
@@ -74,9 +70,7 @@ trait GrafanaRoutes extends JsonSupport {
               }
 
             case TargetForm(SEARCHES_LAST_YEAR, _, _) => // Last year target calculus
-              val from = form.range.from.minusYears(1)
-              val to = form.range.to.minusYears(1)
-              Tables.queryProxyRequestTable.getSearchesCountByTime(from, to) map {
+              Tables.queryProxyRequestTable.getSearchesCountByTime(from.minusYears(1), to.minusYears(1)) map {
                 case lst: List[DateTime] =>
                   log.info(s"retrieved non empty list for $SEARCHES_LAST_YEAR")
                   JsObject(
@@ -87,7 +81,60 @@ trait GrafanaRoutes extends JsonSupport {
                   log.info(s"empty list returned for $SEARCHES_LAST_YEAR with params $from, $to")
                   JsObject.empty
               }
-            case _ => throw new Exception("Unsupported targer type received")
+
+            case TargetForm(BOOKING_TODAY, _, _) => // Today target calculus
+              Tables.bookingRequestTable.getBookingCountByTime(from, to) map {
+                case lst: List[DateTime] =>
+                  log.info(s"retrieved non empty list for $BOOKING_TODAY")
+                  JsObject(
+                    "target" -> BOOKING_TODAY,
+                    "datapoints" -> spreadTimeSeries(lst, from, to, interval, LastYear).toJson
+                  )
+                case _ =>
+                  log.info(s"empty list returned for $BOOKING_TODAY with params $from, $to")
+                  JsObject.empty
+              }
+
+            case TargetForm(BOOKING_YESTERDAY, _, _) => // Yesterday target calculus
+              Tables.bookingRequestTable.getBookingCountByTime(from.minusDays(1), to.minusDays(1)) map {
+                case lst: List[DateTime] =>
+                  log.info(s"retrieved non empty list for $BOOKING_YESTERDAY")
+                  JsObject(
+                    "target" -> BOOKING_YESTERDAY,
+                    "datapoints" -> spreadTimeSeries(lst, from, to, interval, LastYear).toJson
+                  )
+                case _ =>
+                  log.info(s"empty list returned for $BOOKING_YESTERDAY with params $from, $to")
+                  JsObject.empty
+              }
+
+            case TargetForm(BOOKING_LAST_WEEK, _, _) => // Last week target calculus
+              Tables.bookingRequestTable.getBookingCountByTime(from.minusWeeks(1), to.minusWeeks(1)) map {
+                case lst: List[DateTime] =>
+                  log.info(s"retrieved non empty list for $BOOKING_LAST_WEEK")
+                  JsObject(
+                    "target" -> BOOKING_LAST_WEEK,
+                    "datapoints" -> spreadTimeSeries(lst, from, to, interval, LastYear).toJson
+                  )
+                case _ =>
+                  log.info(s"empty list returned for $BOOKING_LAST_WEEK with params $from, $to")
+                  JsObject.empty
+              }
+
+            case TargetForm(BOOKING_LAST_YEAR, _, _) => // Yesterday target calculus
+              Tables.bookingRequestTable.getBookingCountByTime(from.minusDays(1), to.minusDays(1)) map {
+                case lst: List[DateTime] =>
+                  log.info(s"retrieved non empty list for $BOOKING_LAST_YEAR")
+                  JsObject(
+                    "target" -> BOOKING_LAST_YEAR,
+                    "datapoints" -> spreadTimeSeries(lst, from, to, interval, LastYear).toJson
+                  )
+                case _ =>
+                  log.info(s"empty list returned for $BOOKING_LAST_YEAR with params $from, $to")
+                  JsObject.empty
+              }
+
+            case _ => throw new Exception("Unsupported target type received")
           }
 
           onSuccess(Future.sequence(res)) {

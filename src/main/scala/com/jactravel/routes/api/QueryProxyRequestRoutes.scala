@@ -36,6 +36,7 @@ trait QueryProxyRequestRoutes extends JsonSupport {
     }
   }
 
+  // Experimental
   def getSearchCountStreamly: Route = {
     get {
       path("query" / "count" / "search" / "streamly") {

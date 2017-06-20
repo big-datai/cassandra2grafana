@@ -36,6 +36,7 @@ trait BookingRequestRoutes extends JsonSupport {
     }
   }
 
+  // Experimental
   def getBookingCountStreamly: Route = {
     get {
       path("query" / "count" / "booking" / "streamly") {

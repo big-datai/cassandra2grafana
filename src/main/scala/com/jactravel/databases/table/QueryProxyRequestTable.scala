@@ -54,7 +54,6 @@ abstract class QueryProxyRequestTable extends Table[QueryProxyRequestTable, Quer
     select(_.client_request_utc_timestamp)
       .where(_.client_request_utc_timestamp lte to)
       .and(_.client_request_utc_timestamp gte from)
-      .limit(300) // need remove in future after tuning server
       .allowFiltering()
       .consistencyLevel_=(ConsistencyLevel.ONE)
       .fetch()
@@ -65,12 +64,12 @@ abstract class QueryProxyRequestTable extends Table[QueryProxyRequestTable, Quer
       .where(_.client_request_utc_timestamp lte to)
       .and(_.client_request_utc_timestamp gte from)
       .and(_.success is "0")
-      .limit(300) // need remove in future after tuning server
       .allowFiltering()
       .consistencyLevel_=(ConsistencyLevel.ONE)
       .fetch()
   }
 
+  // Experimental
   def getSearchesCountByTimeStreamly(from: DateTime, to: DateTime): Future[List[DateTime]] = {
 
     val enumFilter: Enumeratee[QueryProxyRequestRecord, QueryProxyRequestRecord] = {
