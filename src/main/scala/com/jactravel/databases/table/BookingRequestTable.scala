@@ -59,10 +59,11 @@ abstract class BookingRequestTable extends Table[BookingRequestTable, BookingReq
     )
   }
 
-  def getBookingCountByTime(from: DateTime, to: DateTime): Future[List[DateTime]] = {
+  def getBookingCountByTime(from: DateTime, to: DateTime, limitSize: Int): Future[List[DateTime]] = {
     select(_.start_utc_timestamp)
       .where(_.start_utc_timestamp lte to)
       .and(_.start_utc_timestamp gte from)
+      .limit(limitSize)
       .allowFiltering()
       .consistencyLevel_=(ConsistencyLevel.ONE)
       .fetch()

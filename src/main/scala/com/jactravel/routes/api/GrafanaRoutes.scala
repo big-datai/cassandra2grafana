@@ -26,13 +26,14 @@ trait GrafanaRoutes extends JsonSupport {
       path("query") {
         entity(as[PostForm]) { form =>
           val interval = form.intervalMs
+          val limit = form.maxDataPoints
           val res = form.targets map {
 
             case TargetForm(SEARCHES_TODAY, _, _) => // Today target calculus
               val from = form.range.from
               val to = form.range.to
 
-              Tables.queryProxyRequestTable.getSearchesCountByTime(from, to) map {
+              Tables.queryProxyRequestTable.getSearchesCountByTime(from, to, limit) map {
                 case Nil =>
                   log.info(s"empty list returned for $SEARCHES_TODAY with params $from, $to")
                   JsObject.empty
@@ -43,7 +44,7 @@ trait GrafanaRoutes extends JsonSupport {
               val from = form.range.from.minusDays(1)
               val to = form.range.to.minusDays(1)
 
-              Tables.queryProxyRequestTable.getSearchesCountByTime(from, to) map {
+              Tables.queryProxyRequestTable.getSearchesCountByTime(from, to, limit) map {
                 case Nil =>
                   log.info(s"empty list returned for $SEARCHES_YESTERDAY with params $from, $to")
                   JsObject.empty
@@ -54,7 +55,7 @@ trait GrafanaRoutes extends JsonSupport {
               val from = form.range.from.minusWeeks(1)
               val to = form.range.to.minusWeeks(1)
 
-              Tables.queryProxyRequestTable.getSearchesCountByTime(from.minusWeeks(1), to.minusWeeks(1)) map {
+              Tables.queryProxyRequestTable.getSearchesCountByTime(from, to, limit) map {
                 case Nil =>
                   log.info(s"empty list returned for $SEARCHES_LAST_WEEK with params $from, $to")
                   JsObject.empty
@@ -65,7 +66,7 @@ trait GrafanaRoutes extends JsonSupport {
               val from = form.range.from.minusYears(1)
               val to = form.range.to.minusYears(1)
 
-              Tables.queryProxyRequestTable.getSearchesCountByTime(from, to) map {
+              Tables.queryProxyRequestTable.getSearchesCountByTime(from, to, limit) map {
                 case Nil =>
                   log.info(s"empty list returned for $SEARCHES_LAST_YEAR with params $from, $to")
                   JsObject.empty
@@ -76,7 +77,7 @@ trait GrafanaRoutes extends JsonSupport {
               val from = form.range.from
               val to = form.range.to
 
-              Tables.bookingRequestTable.getBookingCountByTime(from, to) map {
+              Tables.bookingRequestTable.getBookingCountByTime(from, to, limit) map {
                 case Nil =>
                   log.info(s"empty list returned for $BOOKING_TODAY with params $from, $to")
                   JsObject.empty
@@ -87,7 +88,7 @@ trait GrafanaRoutes extends JsonSupport {
               val from = form.range.from.minusDays(1)
               val to = form.range.to.minusDays(1)
 
-              Tables.bookingRequestTable.getBookingCountByTime(from, to) map {
+              Tables.bookingRequestTable.getBookingCountByTime(from, to, limit) map {
                 case Nil =>
                   log.info(s"empty list returned for $BOOKING_YESTERDAY with params $from, $to")
                   JsObject.empty
@@ -98,7 +99,7 @@ trait GrafanaRoutes extends JsonSupport {
               val from = form.range.from.minusWeeks(1)
               val to = form.range.to.minusWeeks(1)
 
-              Tables.bookingRequestTable.getBookingCountByTime(from, to) map {
+              Tables.bookingRequestTable.getBookingCountByTime(from, to, limit) map {
                 case Nil =>
                   log.info(s"empty list returned for $BOOKING_LAST_WEEK with params $from, $to")
                   JsObject.empty
@@ -109,7 +110,7 @@ trait GrafanaRoutes extends JsonSupport {
               val from = form.range.from.minusYears(1)
               val to = form.range.to.minusYears(1)
 
-              Tables.bookingRequestTable.getBookingCountByTime(from, to) map {
+              Tables.bookingRequestTable.getBookingCountByTime(from, to, limit) map {
                 case Nil =>
                   log.info(s"empty list returned for $BOOKING_LAST_YEAR with params $from, $to")
                   JsObject.empty

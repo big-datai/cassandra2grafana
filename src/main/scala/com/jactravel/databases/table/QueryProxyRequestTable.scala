@@ -50,10 +50,11 @@ abstract class QueryProxyRequestTable extends Table[QueryProxyRequestTable, Quer
     )
   }
 
-  def getSearchesCountByTime(from: DateTime, to: DateTime): Future[List[DateTime]] = {
+  def getSearchesCountByTime(from: DateTime, to: DateTime, limitSize: Int): Future[List[DateTime]] = {
     select(_.client_request_utc_timestamp)
       .where(_.client_request_utc_timestamp lte to)
       .and(_.client_request_utc_timestamp gte from)
+      .limit(limitSize)
       .allowFiltering()
       .consistencyLevel_=(ConsistencyLevel.ONE)
       .fetch()
