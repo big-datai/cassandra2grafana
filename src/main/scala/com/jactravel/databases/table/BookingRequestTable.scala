@@ -4,7 +4,7 @@ import com.jactravel.databases.entity.{BookRoomInfo, BookingRequestRecord}
 import com.jactravel.utils.JsonSupport
 import com.outworkers.phantom.Row
 import com.outworkers.phantom.connectors.RootConnector
-import com.outworkers.phantom.dsl.{Ascending, ClusteringOrder, ConsistencyLevel, PartitionKey, Table, context}
+import com.outworkers.phantom.dsl.{ClusteringOrder, ConsistencyLevel, Descending, PartitionKey, Table, context}
 import com.outworkers.phantom.streams._
 import org.joda.time.DateTime
 import play.api.libs.iteratee.{Enumeratee, Iteratee}
@@ -17,13 +17,13 @@ import scala.concurrent.Future
   */
 abstract class BookingRequestTable extends Table[BookingRequestTable, BookingRequestRecord] with RootConnector with JsonSupport {
   object trade_id extends IntColumn with PartitionKey
-  object query_uuid extends StringColumn with PartitionKey
-  object search_query_uuid extends StringColumn with ClusteringOrder with Ascending
+  object start_utc_timestamp extends DateTimeColumn with ClusteringOrder with Descending
+  object end_utc_timestamp extends DateTimeColumn with ClusteringOrder with Descending
+  object query_uuid extends StringColumn
+  object search_query_uuid extends StringColumn
   object pre_book_query_uuid extends StringColumn
   object search_processor extends IntColumn
   object host extends StringColumn
-  object start_utc_timestamp extends DateTimeColumn
-  object end_utc_timestamp extends DateTimeColumn
   object brand_id extends IntColumn
   object sales_channel_id extends IntColumn
   object property_id extends IntColumn
@@ -36,7 +36,7 @@ abstract class BookingRequestTable extends Table[BookingRequestTable, BookingReq
   object currency_id extends IntColumn
   object pre_booking_token extends StringColumn
 
-  override def tableName: String = "book_request"
+  override def tableName: String = "book_request_backup"
 
   override def fromRow(r: Row): BookingRequestRecord = {
     BookingRequestRecord(
@@ -59,17 +59,17 @@ abstract class BookingRequestTable extends Table[BookingRequestTable, BookingReq
     )
   }
 
-  def getBookingCountByTime(from: DateTime, to: DateTime): Future[List[DateTime]] = {
+  def getBookingCountByTime(from: DateTime, to: DateTime, limitSize: Int): Future[List[DateTime]] = {
     select(_.start_utc_timestamp)
-      .where(_.start_utc_timestamp isLte to)
-      .and(_.start_utc_timestamp isGte from)
-      .limit(300) // need remove in future after tuning server
+      .where(_.start_utc_timestamp lte to)
+      .and(_.start_utc_timestamp gte from)
+      .limit(limitSize)
       .allowFiltering()
       .consistencyLevel_=(ConsistencyLevel.ONE)
       .fetch()
   }
 
-
+  // Experimental
   def getBookingCountByTimeStreamly(from: DateTime, to: DateTime): Future[List[DateTime]] = {
 
     val enumFilter: Enumeratee[BookingRequestRecord, BookingRequestRecord] = {
