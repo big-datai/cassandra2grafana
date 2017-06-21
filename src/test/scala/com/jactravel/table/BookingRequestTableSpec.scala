@@ -13,6 +13,8 @@ class BookingRequestTableSpec extends CassandraTableSpec {
 
   override def beforeAll(): Unit = database.create()
   final val table = database.bookingRequestTable
+
+  val limit = 5
   "BookingRequestTable.getBookingCountByTime" should "correctly insert entity" in {
     for {
       insertRes <- table.insert
@@ -39,7 +41,7 @@ class BookingRequestTableSpec extends CassandraTableSpec {
     val from = DateTime.now.minus(36000 * 1000)
     val to = DateTime.now.plus(36000 * 1000)
 
-    table.getBookingCountByTime(from, to) map { lst =>
+    table.getBookingCountByTime(from, to, limit) map { lst =>
       lst.size shouldEqual 1
     }
   }
@@ -48,7 +50,7 @@ class BookingRequestTableSpec extends CassandraTableSpec {
     val from = DateTime.now.minus(36000 * 1000)
     val to = DateTime.now.minus(3600 * 1000)
 
-    table.getBookingCountByTime(from, to) map { lst =>
+    table.getBookingCountByTime(from, to, limit) map { lst =>
       lst shouldEqual Nil
     }
   }

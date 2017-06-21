@@ -13,6 +13,8 @@ class QueryProxyRequestTableSpec extends CassandraTableSpec {
   override def beforeAll(): Unit = database.create()
   final val table = database.queryProxyRequestTable
 
+  val limit = 5
+
 
   "QueryProxyRequestTable.insert" should "insert entity" in {
     for {
@@ -58,7 +60,7 @@ class QueryProxyRequestTableSpec extends CassandraTableSpec {
     val from = DateTime.now.minus(36000 * 1000)
     val to = DateTime.now.plus(36000 * 1000)
 
-    table.getSearchesCountByTime(from, to) map { lst =>
+    table.getSearchesCountByTime(from, to, limit) map { lst =>
       lst.size shouldEqual 2
     }
   }
@@ -67,7 +69,7 @@ class QueryProxyRequestTableSpec extends CassandraTableSpec {
     val from = DateTime.now.minus(36000 * 1000)
     val to = DateTime.now.minus(3600 * 1000)
 
-    table.getSearchesCountByTime(from, to) map { lst =>
+    table.getSearchesCountByTime(from, to, limit) map { lst =>
       lst shouldEqual Nil
     }
   }
