@@ -14,6 +14,7 @@ object Configuration {
     */
   final val serverHost: String = config.getString("app.host")
   final val serverPort: Int = config.getInt("app.port")
+  final val serverParallelism: Int = config.getInt("app.parallelism")
   final val cassandraUsername: String = config.getString("cassandra.username")
   final val cassandraPassword: String = config.getString("cassandra.password")
   final val cassandraHosts: List[String] = config.getString("cassandra.hosts").split(",").toList

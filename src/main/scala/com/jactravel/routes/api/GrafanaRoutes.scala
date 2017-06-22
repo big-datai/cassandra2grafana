@@ -1,13 +1,15 @@
 package com.jactravel.routes.api
 
-import akka.http.scaladsl.server.Directives._
-import akka.http.scaladsl.server.Route
+import akka.http.scaladsl.model.HttpMethods.POST
+import akka.http.scaladsl.model._
+import akka.http.scaladsl.unmarshalling.Unmarshal
+import akka.stream.ActorMaterializer
 import com.jactravel.databases.Tables
-import com.jactravel.routes.forms.{PostForm, TargetForm}
+import com.jactravel.routes.forms.{GrafanaResponse, PostForm, TargetForm}
 import com.jactravel.utils.Constants._
-import com.jactravel.utils.DefaultLogging.log
 import com.jactravel.utils.JsonSupport
 import com.jactravel.utils.RoutesHelper._
+import com.jactravel.utils.Types.AsyncCall
 import org.joda.time.DateTime
 import spray.json._
 
@@ -19,112 +21,102 @@ import scala.concurrent.Future
   */
 trait GrafanaRoutes extends JsonSupport {
 
-  final val grafanaRoutes: Route = grafana
+  implicit val materializer: ActorMaterializer
 
-  def grafana: Route = {
-    post {
-      path("query") {
-        entity(as[PostForm]) { form =>
-          val interval = form.intervalMs
-          val limit = form.maxDataPoints
-          val res = form.targets map {
+  final val grafanaRoutes: AsyncCall = {
+    case HttpRequest(POST, Uri.Path("/query"), _, entity, _) =>
+      Unmarshal(entity.withContentType(ContentTypes.`application/json`)).to[PostForm] flatMap { form =>
+        val interval = form.intervalMs
+        val limit = form.maxDataPoints
 
-            case TargetForm(SEARCHES_TODAY, _, _) => // Today target calculus
-              val from = form.range.from
-              val to = form.range.to
+        val searchesResult = form.targets map {
 
-              Tables.queryProxyRequestTable.getSearchesCountByTime(from, to, limit) map {
-                case Nil =>
-                  log.info(s"empty list returned for $SEARCHES_TODAY with params $from, $to")
-                  JsObject.empty
-                case lst: List[DateTime] => toGrafanaResult(SEARCHES_TODAY, lst, from, to, interval)
-              }
+          // TODAY TARGET CALCULUS
+          case TargetForm(SEARCHES_TODAY, _, _) =>
+            val from = form.range.from
+            val to = form.range.to
 
-            case TargetForm(SEARCHES_YESTERDAY, _, _) => // Yesterday target calculus
-              val from = form.range.from.minusDays(1)
-              val to = form.range.to.minusDays(1)
+            Tables.queryProxyRequestTable.getSearchesCountByTime(from, to, limit) map {
+              case Nil => GrafanaResponse(SEARCHES_TODAY)
+              case lst: List[DateTime] => toGrafanaResult(SEARCHES_TODAY, lst, from, to, interval)
+            }
 
-              Tables.queryProxyRequestTable.getSearchesCountByTime(from, to, limit) map {
-                case Nil =>
-                  log.info(s"empty list returned for $SEARCHES_YESTERDAY with params $from, $to")
-                  JsObject.empty
-                case lst: List[DateTime] => toGrafanaResult(SEARCHES_YESTERDAY, lst, from, to, interval, Yesterday)
-              }
+          // YESTERDAY TARGET CALCULUS
+          case TargetForm(SEARCHES_YESTERDAY, _, _) => // Yesterday target calculus
+            val from = form.range.from.minusDays(1)
+            val to = form.range.to.minusDays(1)
 
-            case TargetForm(SEARCHES_LAST_WEEK, _, _) => // Last week target calculus
-              val from = form.range.from.minusWeeks(1)
-              val to = form.range.to.minusWeeks(1)
+            Tables.queryProxyRequestTable.getSearchesCountByTime(from, to, limit) map {
+              case Nil => GrafanaResponse(SEARCHES_YESTERDAY)
+              case lst: List[DateTime] => toGrafanaResult(SEARCHES_YESTERDAY, lst, from, to, interval, Yesterday)
+            }
 
-              Tables.queryProxyRequestTable.getSearchesCountByTime(from, to, limit) map {
-                case Nil =>
-                  log.info(s"empty list returned for $SEARCHES_LAST_WEEK with params $from, $to")
-                  JsObject.empty
-                case lst: List[DateTime] => toGrafanaResult(SEARCHES_LAST_WEEK, lst, from, to, interval, LastWeek)
-              }
+          // LAST WEEK TARGET CALCULUS
+          case TargetForm(SEARCHES_LAST_WEEK, _, _) => // Last week target calculus
+            val from = form.range.from.minusWeeks(1)
+            val to = form.range.to.minusWeeks(1)
 
-            case TargetForm(SEARCHES_LAST_YEAR, _, _) => // Last year target calculus
-              val from = form.range.from.minusYears(1)
-              val to = form.range.to.minusYears(1)
+            Tables.queryProxyRequestTable.getSearchesCountByTime(from, to, limit) map {
+              case Nil => GrafanaResponse(SEARCHES_LAST_WEEK)
+              case lst: List[DateTime] => toGrafanaResult(SEARCHES_LAST_WEEK, lst, from, to, interval, LastWeek)
+            }
 
-              Tables.queryProxyRequestTable.getSearchesCountByTime(from, to, limit) map {
-                case Nil =>
-                  log.info(s"empty list returned for $SEARCHES_LAST_YEAR with params $from, $to")
-                  JsObject.empty
-                case lst: List[DateTime] => toGrafanaResult(SEARCHES_LAST_YEAR, lst, from, to, interval, LastYear)
-              }
+          // LAST YEAR TARGET CALCULUS
+          case TargetForm(SEARCHES_LAST_YEAR, _, _) => // Last year target calculus
+            val from = form.range.from.minusYears(1)
+            val to = form.range.to.minusYears(1)
 
-            case TargetForm(BOOKING_TODAY, _, _) => // Today target calculus
-              val from = form.range.from
-              val to = form.range.to
+            Tables.queryProxyRequestTable.getSearchesCountByTime(from, to, limit) map {
+              case Nil => GrafanaResponse(SEARCHES_LAST_YEAR)
+              case lst: List[DateTime] => toGrafanaResult(SEARCHES_LAST_YEAR, lst, from, to, interval, LastYear)
+            }
 
-              Tables.bookingRequestTable.getBookingCountByTime(from, to, limit) map {
-                case Nil =>
-                  log.info(s"empty list returned for $BOOKING_TODAY with params $from, $to")
-                  JsObject.empty
-                case lst: List[DateTime] => toGrafanaResult(BOOKING_TODAY, lst, from, to, interval)
-              }
+          // BOOKING TODAY TARGET CALCULUS
+          case TargetForm(BOOKING_TODAY, _, _) => // Today target calculus
+            val from = form.range.from
+            val to = form.range.to
 
-            case TargetForm(BOOKING_YESTERDAY, _, _) => // Yesterday target calculus
-              val from = form.range.from.minusDays(1)
-              val to = form.range.to.minusDays(1)
+            Tables.bookingRequestTable.getBookingCountByTime(from, to, limit) map {
+              case Nil => GrafanaResponse(BOOKING_TODAY)
+              case lst: List[DateTime] => toGrafanaResult(BOOKING_TODAY, lst, from, to, interval)
+            }
 
-              Tables.bookingRequestTable.getBookingCountByTime(from, to, limit) map {
-                case Nil =>
-                  log.info(s"empty list returned for $BOOKING_YESTERDAY with params $from, $to")
-                  JsObject.empty
-                case lst: List[DateTime] => toGrafanaResult(BOOKING_YESTERDAY, lst, from, to, interval, Yesterday)
-              }
+          // BOOKING YESTERDAY TARGET CALCULUS
+          case TargetForm(BOOKING_YESTERDAY, _, _) => // Yesterday target calculus
+            val from = form.range.from.minusDays(1)
+            val to = form.range.to.minusDays(1)
 
-            case TargetForm(BOOKING_LAST_WEEK, _, _) => // Last week target calculus
-              val from = form.range.from.minusWeeks(1)
-              val to = form.range.to.minusWeeks(1)
+            Tables.bookingRequestTable.getBookingCountByTime(from, to, limit) map {
+              case Nil => GrafanaResponse(BOOKING_YESTERDAY)
+              case lst: List[DateTime] => toGrafanaResult(BOOKING_YESTERDAY, lst, from, to, interval, Yesterday)
+            }
 
-              Tables.bookingRequestTable.getBookingCountByTime(from, to, limit) map {
-                case Nil =>
-                  log.info(s"empty list returned for $BOOKING_LAST_WEEK with params $from, $to")
-                  JsObject.empty
-                case lst: List[DateTime] => toGrafanaResult(BOOKING_LAST_WEEK, lst, from, to, interval, LastWeek)
-              }
+          // BOOKING LAST WEEK CALCULUS
+          case TargetForm(BOOKING_LAST_WEEK, _, _) => // Last week target calculus
+            val from = form.range.from.minusWeeks(1)
+            val to = form.range.to.minusWeeks(1)
 
-            case TargetForm(BOOKING_LAST_YEAR, _, _) => // Yesterday target calculus
-              val from = form.range.from.minusYears(1)
-              val to = form.range.to.minusYears(1)
+            Tables.bookingRequestTable.getBookingCountByTime(from, to, limit) map {
+              case Nil => GrafanaResponse(BOOKING_LAST_WEEK)
+              case lst: List[DateTime] => toGrafanaResult(BOOKING_LAST_WEEK, lst, from, to, interval, LastWeek)
+            }
 
-              Tables.bookingRequestTable.getBookingCountByTime(from, to, limit) map {
-                case Nil =>
-                  log.info(s"empty list returned for $BOOKING_LAST_YEAR with params $from, $to")
-                  JsObject.empty
-                case lst: List[DateTime] => toGrafanaResult(BOOKING_LAST_YEAR, lst, from, to, interval, LastYear)
-              }
+          // BOOKING LAST YEAR CALCULUS
+          case TargetForm(BOOKING_LAST_YEAR, _, _) => // Yesterday target calculus
+            val from = form.range.from.minusYears(1)
+            val to = form.range.to.minusYears(1)
 
-            case _ => throw new Exception("Unsupported target type received")
-          }
+            Tables.bookingRequestTable.getBookingCountByTime(from, to, limit) map {
+              case Nil => GrafanaResponse(BOOKING_LAST_YEAR)
+              case lst: List[DateTime] => toGrafanaResult(BOOKING_LAST_YEAR, lst, from, to, interval, LastYear)
+            }
 
-          onSuccess(Future.sequence(res)) {
-            lst: List[JsObject] => complete(lst)
-          }
+          // UNSUPPORTED TARGET TYPE
+          case _ => throw new Exception("Unsupported target type received")
         }
+
+        Future.sequence(searchesResult) map (lst =>
+          HttpResponse(entity = HttpEntity(ContentType(MediaTypes.`application/json`), lst.toJson.toString())))
       }
-    }
   }
 }

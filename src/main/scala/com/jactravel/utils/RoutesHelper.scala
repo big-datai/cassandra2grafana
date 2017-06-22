@@ -1,9 +1,9 @@
 package com.jactravel.utils
 
+import com.jactravel.routes.forms.GrafanaResponse
 import com.jactravel.utils.Constants._
-import com.jactravel.utils.DefaultLogging.log
+import com.jactravel.utils.Types.TimeSeries
 import org.joda.time.DateTime
-import spray.json._
 
 import scala.annotation.tailrec
 
@@ -16,7 +16,7 @@ object RoutesHelper extends JsonSupport {
                        from: DateTime,
                        to: DateTime,
                        interval: Long,
-                       targetsType: Targets): List[(Int, Long)] = {
+                       targetsType: Targets): List[TimeSeries] = {
 
     val isLeap = from.minusYears(1).year().isLeap
 
@@ -28,7 +28,7 @@ object RoutesHelper extends JsonSupport {
     }
 
     @tailrec
-    def spreadAcc(from: DateTime, resLst: List[(Int, Long)] = Nil): List[(Int, Long)] = {
+    def spreadAcc(from: DateTime, resLst: List[(Int, Long)] = Nil): List[TimeSeries] = {
       if (from isAfter to) resLst
       else {
         val key = lst.count(date => (date isBefore from.plus(interval)) && (date isAfter from))
@@ -45,12 +45,8 @@ object RoutesHelper extends JsonSupport {
                       from: DateTime,
                       to: DateTime,
                       interval: Long,
-                      targetType: Targets = Today): JsObject = {
+                      targetType: Targets = Today): GrafanaResponse = {
 
-    log.info(s"retrieved non empty list for $target")
-    JsObject(
-      "target" -> target,
-      "datapoints" -> spreadTimeSeries(lst, from, to, interval, targetType).toJson
-    )
+    GrafanaResponse(target, spreadTimeSeries(lst, from, to, interval, targetType))
   }
 }

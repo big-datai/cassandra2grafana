@@ -2,7 +2,7 @@ package com.jactravel.utils
 
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import com.jactravel.databases.entity.BookRoomInfo
-import com.jactravel.routes.forms.{PostForm, RangeForm, TargetForm}
+import com.jactravel.routes.forms.{GrafanaResponse, PostForm, RangeForm, TargetForm}
 import org.joda.time.DateTime
 import spray.json._
 
@@ -33,4 +33,6 @@ trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
   implicit val postFmt: RootJsonFormat[PostForm] = jsonFormat5(PostForm)
 
   implicit val bookInfoFmt: RootJsonFormat[BookRoomInfo] = jsonFormat7(BookRoomInfo)
+
+  implicit val grafanaResponseFmt: RootJsonFormat[GrafanaResponse] = jsonFormat2(GrafanaResponse)
 }

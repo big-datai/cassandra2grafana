@@ -18,5 +18,10 @@ object WebServer extends App with Routes {
   override implicit val executionContext: ExecutionContextExecutor = actorSystem.dispatcher
 
   log.info(s"Starting server on $serverHost:$serverPort...")
-  Http().bindAndHandle(combinedRoutes, serverHost, serverPort)
+  Http().bindAndHandleAsync(
+    handler = combinedRoutes,
+    interface = serverHost,
+    port = serverPort,
+    parallelism = serverParallelism
+  )
 }
